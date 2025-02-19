@@ -16,9 +16,9 @@ NOME_EXCEL_PROCESSAR = 'Planilha de Entrada Grupos.xlsx'
 #PATHS
 PATH_RPA = r"C:\RPA"
 PATH_FALHAS = f"{PATH_RPA}\Falhas"
-PATH_LOGS = f"{PATH_RPA}\Logs"
-PATH_DEVLOGS = f"{PATH_LOGS}\DevLogs"
-PATH_PROCESSADOS = f"{PATH_RPA}\Processados"
-PATH_PROCESSAR = f"{PATH_RPA}\Processar"
-PATH_PRINTS = f"{PATH_LOGS}\Prints"
+PATH_LOGS = rf"{PATH_RPA}\Logs"
+PATH_DEVLOGS = rf"{PATH_LOGS}\DevLogs"
+PATH_PROCESSADOS = rf"{PATH_RPA}\Processados"
+PATH_PROCESSAR = rf"{PATH_RPA}\Processar"
+PATH_PRINTS = rf"{PATH_LOGS}\Prints"
 #criar planilha de saída com o nome “cnpjs_dd-mm-aaaa_hh-mm-ss”
