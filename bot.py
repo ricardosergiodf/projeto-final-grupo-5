@@ -6,7 +6,6 @@ from botcity.maestro import *
 BotMaestroSDK.RAISE_NOT_CONNECTED = False
 from src.criar_diretorios import *
 
-print("Hello world!")
 
 def main():
     criar_diretorios()
