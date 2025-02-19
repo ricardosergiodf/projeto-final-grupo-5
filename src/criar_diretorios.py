@@ -27,6 +27,10 @@ def criar_diretorios():
         if not os.path.exists(PATH_PROCESSAR):
             logging.info("Diretorio nao encontrado... -> Cria diretorio de Processar.")
             os.makedirs(PATH_PROCESSAR)
+
+        if not os.path.exists(PATH_PRINTS):
+            logging.info("Diretorio nao encontrado... -> Cria diretorio de Prints.")
+            os.makedirs(PATH_PRINTS)
         
         return True
     
