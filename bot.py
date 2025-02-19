@@ -5,6 +5,7 @@ from botcity.web import WebBot, Browser, By
 from botcity.maestro import *
 BotMaestroSDK.RAISE_NOT_CONNECTED = False
 
+print("Hello world!")
 
 def main():
     maestro = BotMaestroSDK.from_sys_args()
