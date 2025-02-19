@@ -1,33 +1,32 @@
 import os
 import logging
+from config import *
 
 def criar_diretorios():
-    rpa_path = r"C:\RPA"
-    falhas_path = f"{rpa_path}\Falhas"
-    logs_path = f"{rpa_path}\Logs"
-    processados_path = f"{rpa_path}\Processados"
-    processar_path = f"{rpa_path}\Processar"
-    
     try:
-        if not os.path.exists(rpa_path):
+        if not os.path.exists(PATH_RPA):
             logging.info("Diretorio nao encontrado... -> Cria diretorio RPA.")
-            os.makedirs(rpa_path)
+            os.makedirs(PATH_RPA)
 
-        if not os.path.exists(falhas_path):
+        if not os.path.exists(PATH_FALHAS):
             logging.info("Diretorio nao encontrado... -> Cria diretorio de Falhas.")
-            os.makedirs(falhas_path)
+            os.makedirs(PATH_FALHAS)
 
-        if not os.path.exists(logs_path):
+        if not os.path.exists(PATH_LOGS):
             logging.info("Diretorio nao encontrado... -> Cria diretorio de Logs.")
-            os.makedirs(logs_path)
+            os.makedirs(PATH_LOGS)
 
-        if not os.path.exists(processados_path):
+        if not os.path.exists(PATH_DEVLOGS):
+            logging.info("Diretorio nao encontrado... -> Cria diretorio de DevLogs")
+            os.makedirs(PATH_DEVLOGS)
+
+        if not os.path.exists(PATH_PROCESSADOS):
             logging.info("Diretorio nao encontrado... -> Cria diretorio de Processados.")
-            os.makedirs(processados_path)
+            os.makedirs(PATH_PROCESSADOS)
 
-        if not os.path.exists(processar_path):
+        if not os.path.exists(PATH_PROCESSAR):
             logging.info("Diretorio nao encontrado... -> Cria diretorio de Processar.")
-            os.makedirs(processar_path)
+            os.makedirs(PATH_PROCESSAR)
         
         return True
     
