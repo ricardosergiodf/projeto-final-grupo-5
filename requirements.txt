@@ -1,5 +1,8 @@
-botcity-framework-web>=0.9.0,<1.0
 botcity-maestro-sdk>=0.5.1,<1.0
+botcity-framework-web==0.10.0
+webdriver-manager==4.0.2
+selenium==3.141
+
 # Uncomment to use botcity-utils
 # botcity-utils>=0.1.2
 
