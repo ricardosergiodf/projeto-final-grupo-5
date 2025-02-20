@@ -1,7 +1,10 @@
 import logging
 from datetime import datetime
+from botcity.maestro import MaestroSDK
 
-def configurar_logger():
+maestro = MaestroSDK() 
+
+def configurar_log():
     try:
         # Define o nome do arquivo de log com base na data e horário
         log_filename = datetime.now().strftime("log_%Y-%m-%d_%H-%M-%S.txt")
@@ -14,5 +17,14 @@ def configurar_logger():
         )
 
     except Exception as e:
-        print(f"Erro ao configurar o logger.")
+        logging.error(f"Erro ao configurar o logger.")
         raise
+
+def enviar_log_maestro(message):
+    try: 
+        logging.info(message)
+        maestro.new_log_entry(activity_label="DEFAULT", values={"Message": message}) 
+
+    except Exception as e:
+        logging.error(f"Erro ao configurar log maestro.")
+        raise 
