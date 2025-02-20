@@ -4,6 +4,8 @@
 
 #from src import criar-diretorios
 
+MAX_TRY_ERRORS = 3
+
 #URLS
 URL_BRASIL_API = 'https://brasilapi.com.br/api/cnpj/v1/'
 URL_RPA_CHALLENGE = 'https://www.rpachallenge.com/'
