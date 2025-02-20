@@ -28,6 +28,6 @@ def criar_diretorios():
         return True
     
     except Exception:
-        # chama função de erro que também já faz o log do erro
+        # error_exception() # chama função de erro que também já faz o log do erro
         return False
     
