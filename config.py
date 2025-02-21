@@ -3,6 +3,7 @@ import time
 
 MAX_TRY_ERRORS = 3
 FORMATO_DATA = time.strftime("%d-%m-%Y_%H-%M-%S")
+FORMATO_DATA = time.strftime("%d-%m-%Y_%H-%M-%S")
 
 # URLs
 URL_BRASIL_API = 'https://brasilapi.com.br/api/cnpj/v1/'
