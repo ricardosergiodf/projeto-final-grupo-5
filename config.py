@@ -3,7 +3,6 @@ import time
 
 MAX_TRY_ERRORS = 3
 FORMATO_DATA = time.strftime("%d-%m-%Y_%H-%M-%S")
-FORMATO_DATA = time.strftime("%d-%m-%Y_%H-%M-%S")
 
 # URLs
 URL_BRASIL_API = 'https://brasilapi.com.br/api/cnpj/v1/'
@@ -12,8 +11,6 @@ URL_CORREIOS = 'https://www2.correios.com.br/sistemas/precosPrazos/'
 URL_JADLOG = 'https://www.jadlog.com.br/jadlog/simulacao'
 
 # Nome de arquivos
-NOME_EXCEL_ENTRADA = 'Planilha de Entrada Grupos.xlsx'
-NOME_EXCEL_SAIDA = "CNPJ"
 NOME_EXCEL_PROCESSAR = "tabela_inicial2.xlsx"
 
 # Paths principais
@@ -26,8 +23,6 @@ PATH_DEVLOGS = rf"{PATH_LOGS}\DevLogs"
 PATH_PRINTS = rf"{PATH_LOGS}\Prints"
 
 # Paths de arquivos
-PATH_PLANILHA_ENTRADA = rf"{PATH_PROCESSAR}\{NOME_EXCEL_ENTRADA}"
-PATH_PLANILHA_SAIDA = rf"{PATH_PROCESSADOS}"
 ARQUIVO_ENTRADA = rf"{PATH_PROCESSAR}\{NOME_EXCEL_PROCESSAR}" 
 ARQUIVO_SAIDA = rf"{PATH_PROCESSADOS}\cnpjs_{FORMATO_DATA}.xlsx"
 
