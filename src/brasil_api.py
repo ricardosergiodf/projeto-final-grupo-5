@@ -2,22 +2,9 @@ import os
 import pandas as pd
 import requests
 import time
+from config import *
 
-# Diretórios dos arquivos
-DIRETORIO_EXCEL = r"C:\RPA\projeto-final-grupo-5\resources"
-ARQUIVO_ENTRADA = os.path.join(DIRETORIO_EXCEL, "tabela_inicial2.xlsx")
-FORMATO_DATA = time.strftime("%d-%m-%Y_%H-%M-%S")
-ARQUIVO_SAIDA = os.path.join(DIRETORIO_EXCEL, f"cnpjs_{FORMATO_DATA}.xlsx")
 
-# Definição das colunas da planilha de saída
-COLUNAS_SAIDA = [
-    "CNPJ", "RAZÃO SOCIAL", "NOME FANTASIA", "ENDEREÇO", "CEP",
-    "DESCRIÇÃO MATRIZ FILIAL", "TELEFONE + DDD", "E-MAIL",
-    "VALOR DO PEDIDO", "DIMENSÕES CAIXA", "PESO DO PRODUTO",
-    "TIPO DE SERVIÇO JADLOG", "TIPO DE SERVIÇO CORREIOS",
-    "VALOR COTAÇÃO JADLOG", "VALOR COTAÇÃO CORREIOS",
-    "PRAZO DE ENTREGA CORREIOS", "Status"
-]
 
 def consultar_api(cnpj, tentativas=3):
     """Consulta a API para obter os dados do CNPJ."""
@@ -140,5 +127,5 @@ def preencher_tabela_saida():
 
 
 # Executar a função
-preencher_tabela_saida()
+#preencher_tabela_saida()
 
