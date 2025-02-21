@@ -1,0 +1,7 @@
+2025-02-21 10:16:03,130 - INFO - Iniciando a tarefa.
+2025-02-21 10:16:03,131 - ERROR - Ocorreu um erro ao executar a tarefa.
+Traceback (most recent call last):
+  File "c:\Users\Nicolas\Desktop\TrabalhoCompass\test_api\test.py", line 33, in executar_tarefa
+    resultado = 10 / 0  # Simulação de erro
+                ~~~^~~
+ZeroDivisionError: division by zero

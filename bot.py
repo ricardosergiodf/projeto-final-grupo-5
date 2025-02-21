@@ -3,7 +3,12 @@ Please make sure you install the bot dependencies with `pip install --upgrade -r
 """
 # from botcity.maestro import *
 from src.setup import *
+
+from src.brasil_api import *
+from src.criar_diretorios import *
+
 from src.configurar_logs import user_logger, dev_logger
+
 
 
 print("Hello world!")
@@ -11,6 +16,13 @@ print("Hello world!")
 RAISE_NOT_CONNECTED = False
 
 def main():
+
+    #bot = setup()
+    #bot.browse("https://www.google.com")
+    #return
+    criar_diretorios()
+    preencher_tabela_saida()
+
     # bot = setup()
     #configurar_log_dev()
     # bot.browse("https://www.google.com")
@@ -21,6 +33,7 @@ def main():
 
     user_logger.info("Bem vindo ao projeto 5.")
     dev_logger.info("Bem vindo ao projeto 5.")
+
 
     
 if __name__ == '__main__':
