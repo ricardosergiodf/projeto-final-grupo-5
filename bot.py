@@ -9,7 +9,7 @@ from src.configurar_logs import user_logger, dev_logger
 from src.cotacao_correios import *
 from src.setup import *
 
-print("Hello world!")
+print("Grupo 5.")
 
 RAISE_NOT_CONNECTED = False
 
