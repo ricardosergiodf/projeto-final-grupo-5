@@ -4,7 +4,14 @@ import requests
 import time
 from config import *
 
-
+def criar_planilha_saida():
+    """Cria a planilha de saída se ela não existir."""
+    
+    
+    if not os.path.exists(ARQUIVO_SAIDA):
+        df_saida = pd.DataFrame(columns=COLUNAS_SAIDA)
+        df_saida.to_excel(ARQUIVO_SAIDA, index=False, engine="openpyxl")
+        print(f"Planilha de saída criada em {ARQUIVO_SAIDA}")
 
 def consultar_api(cnpj, tentativas=3):
     """Consulta a API para obter os dados do CNPJ."""
@@ -98,7 +105,7 @@ def verificar_campos_vazios(df_saida):
                     df_saida.at[index, col] = "N/A"
                     campos_faltando.append(col)
 
-            status_list.append("Completo" if not campos_faltando else f"Faltando: {', '.join(campos_faltando)}")
+            status_list.append("Completo" if not campos_faltando else f"Os campos: {', '.join(campos_faltando)} estão vazios")
     except Exception as e:
         print(f"Erro ao verificar campos vazios: {e}")
 
@@ -109,6 +116,9 @@ def verificar_campos_vazios(df_saida):
 def preencher_tabela_saida():
     """Executa todo o fluxo: preenche com dados existentes, consulta API e verifica status."""
     try:
+        # Criando a planilha de saída se ela não existir
+        criar_planilha_saida()
+
         print("Preenchendo tabela com dados existentes...")
         df_saida = preencher_com_dados_existentes()
 
@@ -118,7 +128,7 @@ def preencher_tabela_saida():
         print("Verificando campos vazios e definindo status...")
         df_saida = verificar_campos_vazios(df_saida)
 
-        # Salvando a planilha
+        # Salvando a planilha com dados atualizados
         df_saida.to_excel(ARQUIVO_SAIDA, index=False, engine="openpyxl")
         print(f"Tabela de saída gerada com sucesso: {ARQUIVO_SAIDA}")
     
