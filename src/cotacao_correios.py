@@ -14,71 +14,17 @@ def correios_cotacao(bot):
 
         for index, row in planilha_saida.iterrows():
             logging.info(f"Processando linha {index + 1}.")
+            
+            if not verificacoes_gerais(row, index, planilha_saida, bot):
+                continue
 
             cep_destino = str(row[9])
-            logging.info(f"Verificando CEP destino: {cep_destino}")
-
-            if verifica_cep_valido(cep_destino) == False:
-                logging.warning(f"CEP inválido encontrado na linha {index + 1}.")
-                celula_incorreta(planilha_saida, index)
-                continue
-
-            if cep_destino == "nan":
-                logging.warning(f"CEP destino NaN encontrado na linha {index + 1}.")
-                celula_incorreta(planilha_saida, index)
-                continue
-
             tipo_servico = str(row[5])
-            logging.info(f"Verificando tipo de serviço: {tipo_servico}")
-
-            if tipo_servico == "nan":
-                logging.warning(f"Tipo de serviço NaN na linha {index + 1}. Encerrando browser.")
-                celula_incorreta(planilha_saida, index)
-                close_browser(bot)
-                continue
-
-            logging.info("Extraindo dimensoes do produto.")
-            dimensoes = str(row[2])
-
-            if dimensoes == "nan":
-                logging.warning(f"Dimensoes NaN na linha {index + 1}. Encerrando browser.")
-                celula_incorreta(planilha_saida, index)
-                close_browser(bot)
-                continue
-
-            dimensoes = dimensoes.split(" x ")
+            dimensoes = str(row[2]).split(" x ")
             altura_produto = dimensoes[0].strip()
             largura_produto = dimensoes[1].strip()
             comprimento_produto = dimensoes[2].strip()
-
-            logging.info(f"Dimensoes extraidas: Altura={altura_produto}, Largura={largura_produto}, Comprimento={comprimento_produto}")
-
-            if float(altura_produto) < 0.4:
-                logging.warning(f"Altura invalida ({altura_produto}) na linha {index + 1}. Encerrando browser.")
-                celula_incorreta(planilha_saida, index)
-                close_browser(bot)
-                continue
-
-            if int(largura_produto) < 8:
-                logging.warning(f"Largura invalida ({largura_produto}) na linha {index + 1}. Encerrando browser.")
-                celula_incorreta(planilha_saida, index)
-                close_browser(bot)
-                continue
-
-            if int(comprimento_produto) <= 13:
-                logging.warning(f"Comprimento invalido ({comprimento_produto}) na linha {index + 1}. Encerrando browser.")
-                celula_incorreta(planilha_saida, index)
-                close_browser(bot)
-                continue
-
             peso_produto = row[3]
-            logging.info(f"Verificando peso do produto: {peso_produto}")
-
-            if str(peso_produto) == "nan":
-                logging.warning(f"Peso NaN encontrado na linha {index + 1}. Encerrando browser.")
-                celula_incorreta(planilha_saida, index)
-                close_browser(bot)
-                continue
 
             logging.info("Abrindo página dos Correios.")
             abrir_url(URL_CORREIOS, bot)
@@ -135,7 +81,6 @@ def correios_cotacao(bot):
         return True
 
     except Exception as e:
-        # error_exception()
         return False
 
 
@@ -159,6 +104,7 @@ def verifica_cep_valido(cep):
         # error_exception()
         return False
     
+
 def captura_resultado(bot, planilha_saida, index):
     try:
         logging.info(f"Capturando resultado para linha {index + 1}.")
@@ -195,3 +141,89 @@ def captura_resultado(bot, planilha_saida, index):
     except Exception as e:
         # error_exception()
         return False
+
+
+def verifica_dimensoes(tipo_servico, comprimento_produto, largura_produto, altura_produto, index):
+    soma_dimensoes = comprimento_produto + largura_produto + altura_produto
+
+    if soma_dimensoes < 21.4 or soma_dimensoes > 200:
+        logging.warning(f"Soma das dimensoes invalida ({soma_dimensoes}) na linha {index + 1}. Encerrando browser.")
+        return False
+    
+    if altura_produto < 0.4 or altura_produto > 100:
+        logging.warning(f"Altura invalida ({altura_produto}) na linha {index + 1}. Encerrando browser.")
+        return False
+
+    if tipo_servico == "SEDEX":
+        if comprimento_produto < 11 or comprimento_produto > 100:
+            logging.warning(f"Comprimento invalido ({comprimento_produto}) na linha {index + 1}. Encerrando browser.")
+            return False
+
+        if largura_produto < 6 or largura_produto > 100:
+            logging.warning(f"Largura invalida ({largura_produto}) na linha {index + 1}. Encerrando browser.")
+            return False
+        
+        return True
+        
+    if tipo_servico == "PAC":
+        if comprimento_produto < 13 or comprimento_produto > 100:
+            logging.warning(f"Comprimento invalido ({comprimento_produto}) na linha {index + 1}. Encerrando browser.")
+            return False
+        
+        if largura_produto < 8 or largura_produto > 100:
+            logging.warning(f"Largura invalida ({largura_produto}) na linha {index + 1}. Encerrando browser.")
+            return False
+        
+        return True
+    
+    
+def verificacoes_gerais(row, index, planilha_saida, bot):
+    cep_destino = str(row[9])
+    logging.info(f"Verificando CEP destino: {cep_destino}")
+
+    if not verifica_cep_valido(cep_destino) or cep_destino in ["nan", "N/A"]:
+        logging.warning(f"CEP inválido encontrado na linha {index + 1}.")
+        celula_incorreta(planilha_saida, index)
+        return False
+
+    tipo_servico = str(row[5])
+    logging.info(f"Verificando tipo de serviço: {tipo_servico}")
+    
+    if tipo_servico in ["nan", "N/A"]:
+        logging.warning(f"Tipo de serviço inválido na linha {index + 1}. Encerrando browser.")
+        celula_incorreta(planilha_saida, index)
+        close_browser(bot)
+        return False
+    
+    dimensoes = str(row[2])
+    logging.info("Verificando dimensões do produto.")
+    
+    if dimensoes in ["nan", "N/A"]:
+        logging.warning(f"Dimensões inválidas na linha {index + 1}. Encerrando browser.")
+        celula_incorreta(planilha_saida, index)
+        close_browser(bot)
+        return False
+    
+    dimensoes = dimensoes.split(" x ")
+    altura_produto = dimensoes[0].strip()
+    largura_produto = dimensoes[1].strip()
+    comprimento_produto = dimensoes[2].strip()
+    
+    logging.info(f"Dimensões extraídas: Altura={altura_produto}, Largura={largura_produto}, Comprimento={comprimento_produto}")
+    
+    if not verifica_dimensoes(tipo_servico, float(comprimento_produto), float(largura_produto), float(altura_produto), index):
+        logging.warning(f"Regras de dimensões incorretas na linha {index + 1}. Encerrando browser.")
+        celula_incorreta(planilha_saida, index)
+        close_browser(bot)
+        return False
+    
+    peso_produto = row[3]
+    logging.info(f"Verificando peso do produto: {peso_produto}")
+    
+    if str(peso_produto) in ["nan", "N/A"]:
+        logging.warning(f"Peso inválido encontrado na linha {index + 1}. Encerrando browser.")
+        celula_incorreta(planilha_saida, index)
+        close_browser(bot)
+        return False
+    
+    return True
