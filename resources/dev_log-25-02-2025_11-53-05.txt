@@ -1,5 +1,4 @@
-2025-02-21 10:16:03,130 - INFO - test.py:32 - Iniciando a tarefa.
-2025-02-21 10:16:03,131 - ERROR - test.py:36 - Ocorreu um erro ao executar a tarefa.
+2025-02-25 11:53:05,751 - ERROR - test.py:36 - Ocorreu um erro ao executar a tarefa.
 Traceback (most recent call last):
   File "c:\Users\Nicolas\Desktop\TrabalhoCompass\test_api\test.py", line 33, in executar_tarefa
     resultado = 10 / 0  # Simulação de erro
