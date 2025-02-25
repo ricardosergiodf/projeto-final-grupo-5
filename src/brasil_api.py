@@ -22,16 +22,28 @@ def consultar_api(cnpj, tentativas=3):
     for tentativa in range(tentativas):
         try:
             response = requests.get(url, headers=headers, timeout=10)
+            print(f"RESPONSE: {response.status_code}")
             if response.status_code == 429:  # Erro de muitas requisições
                 print(f"Erro 429 - Aguardando antes de tentar novamente... ({tentativa + 1}/{tentativas})")
-                time.sleep(10)
+                error_msg = "Erro 429 muitas requisições"
+                time.sleep(5)
                 continue
+
+            if response.status_code == 400:
+                print(f"Erro 400 - CNPJ inválido")
+                error_msg = "Erro 400 CNPJ inválido"
+                return {"CNPJ": cnpj, "Status": error_msg}
+            
+            if response.status_code == 404:
+                print(f"Erro 404 - CNPJ não encontrado")
+                error_msg = "Erro 404 CNPJ não encontrado"
+                return {"CNPJ": cnpj, "Status": error_msg}
 
             response.raise_for_status()
             data = response.json()
 
             if "message" in data:
-                erro = data["message"]
+                erro = data["Erro"]
                 print(f"Erro ao consultar CNPJ {cnpj}: {erro}")
                 return {"CNPJ": cnpj, "Status": erro}
 
@@ -43,7 +55,7 @@ def consultar_api(cnpj, tentativas=3):
                 "CEP": data.get("cep", ""),
                 "DESCRIÇÃO MATRIZ FILIAL": data.get("descricao_identificador_matriz_filial", ""),
                 "TELEFONE + DDD": data.get("ddd_telefone_1", ""),
-                "E-MAIL": data.get("email", "") if data.get("email") else "N/A"
+                "E-MAIL": data.get("email", "") if data.get("email") else "N/A",
             }
         
         except requests.exceptions.RequestException as e:
@@ -86,6 +98,24 @@ def preencher_com_dados_existentes():
             if coluna not in df_saida.columns:
                 df_saida[coluna] = ""
 
+        
+        # Copiar os dados da coluna 'DIMENSÕES CAIXA (altura x largura x comprimento cm)'
+        if "DIMENSÕES CAIXA (altura x largura x comprimento cm)" in df_entrada.columns:
+            df_saida["DIMENSÕES CAIXA"] = df_entrada["DIMENSÕES CAIXA (altura x largura x comprimento cm)"]
+            # Remover a coluna original para evitar duplicação
+            df_saida.drop(columns=["DIMENSÕES CAIXA (altura x largura x comprimento cm)"], inplace=True)
+
+        # Reorganizar as colunas para que 'DIMENSÕES CAIXA' fique após 'E-MAIL'
+        colunas_ordenadas = [
+            "CNPJ", "RAZÃO SOCIAL", "NOME FANTASIA", "ENDEREÇO", "CEP",
+            "DESCRIÇÃO MATRIZ FILIAL", "TELEFONE + DDD", "E-MAIL",
+            "VALOR DO PEDIDO", "DIMENSÕES CAIXA", "PESO DO PRODUTO",
+            "TIPO DE SERVIÇO JADLOG", "TIPO DE SERVIÇO CORREIOS",
+            "VALOR COTAÇÃO JADLOG", "VALOR COTAÇÃO CORREIOS",
+            "PRAZO DE ENTREGA CORREIOS", "Status"
+        ]
+        df_saida = df_saida[colunas_ordenadas]
+
         return df_saida
     except Exception as e:
         print(f"Erro ao preencher com dados existentes: {e}")
@@ -100,17 +130,19 @@ def verificar_campos_vazios(df_saida):
         for index, row in df_saida.iterrows():
             campos_faltando = []
             
+            
             for col in df_saida.columns:
                 if col not in campos_vazios and (pd.isna(row[col]) or str(row[col]).strip() == "" or row[col] == "N/A"):
                     df_saida.at[index, col] = "N/A"
                     campos_faltando.append(col)
 
-            status_list.append("Completo" if not campos_faltando else f"Os campos: {', '.join(campos_faltando)} estão vazios")
+            status_list.append("Completo" if not campos_faltando else f"Faltando: {', '.join(campos_faltando)}")
     except Exception as e:
         print(f"Erro ao verificar campos vazios: {e}")
 
     df_saida["Status"] = status_list
     return df_saida
+       
 
 
 def preencher_tabela_saida():
