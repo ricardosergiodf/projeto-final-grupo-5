@@ -15,19 +15,27 @@ URL_JADLOG = 'https://www.jadlog.com.br/jadlog/simulacao'
 
 #Nome arquivos
 NOME_EXCEL_PROCESSAR = "tabela_inicial2.xlsx"
+NOME_EXCEL_DESTINATARIOS = "emails.xlsx"
+NOME_COLUNA_DESTINATARIOS = "emails"
 
-#PATHS
+
+# Paths principais
 PATH_RPA = r"C:\RPA"
+PATH_FALHAS = rf"{PATH_RPA}\Falhas"
+PATH_PROCESSAR = rf"{PATH_RPA}\Processar"
+PATH_PROCESSADOS = rf"{PATH_RPA}\Processados"
 PATH_FALHAS = rf"{PATH_RPA}\Falhas"
 PATH_LOGS = rf"{PATH_RPA}\Logs"
 PATH_DEVLOGS = rf"{PATH_LOGS}\DevLogs"
 PATH_PROCESSADOS = rf"{PATH_RPA}\Processados"
 PATH_PROCESSAR = rf"{PATH_RPA}\Processar"
 PATH_PRINTS = rf"{PATH_LOGS}\Prints"
+PATH_DESTINATARIOS = PATH_RPA
 
 # Path Arquivos
 ARQUIVO_ENTRADA = rf"{PATH_PROCESSAR}\{NOME_EXCEL_PROCESSAR}" 
 ARQUIVO_SAIDA = rf"{PATH_PROCESSADOS}\cnpjs_{FORMATO_DATA}.xlsx"
+ARQUIVO_DESTINATARIOS = rf"{PATH_DESTINATARIOS}/{NOME_EXCEL_DESTINATARIOS}"
 
 # Definição das colunas da planilha de saída
 COLUNAS_SAIDA = [
