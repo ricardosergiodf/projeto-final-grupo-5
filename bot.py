@@ -19,8 +19,6 @@ def main():
     # user_logger.info("Grupo 5.")
     # dev_logger.info("Grupo 5.") 
     setup()
-    mandar_email("cotacao correios", "oooo.mp4",r"C:\Users\muril\Pictures")
-    mandar_email("RPA Challenge", "bicho2.jpg",r"C:\Users\muril\Pictures", False, "Apertando submit")
     bot = bot_driver_setup()
     criar_diretorios()
     preencher_tabela_saida()
