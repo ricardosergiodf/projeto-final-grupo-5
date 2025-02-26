@@ -6,6 +6,7 @@ from email.mime.text import MIMEText
 from email.mime.application import MIMEApplication
 from config import *
 import pandas as pd
+from src.configurar_logs import user_logger
 
 def mandar_email(nome_processo, arquivo_nome, path_arquivo, is_sucesso = True, nome_tarefa = "n/a"):
     try:
@@ -44,9 +45,9 @@ def mandar_email(nome_processo, arquivo_nome, path_arquivo, is_sucesso = True, n
 
         servidor.send_message(msg)
         servidor.quit()
-        logging.info(f"Email enviado para: {destinatarios}")
+        user_logger.info(f"Email enviado para: {destinatarios}")
     except Exception as error:
-        logging.error(f"Erro ao tentar enviar o email: {error}")
+        user_logger.error(f"Erro ao tentar enviar o email: {error}")
         raise Exception('Erro ao tentar enviar o Email')
         
 
@@ -62,6 +63,6 @@ def capturar_destinatarios(path_arquivo, coluna):
         else:
             raise Exception(f'Erro: a coluna: {coluna} nao foi encontrada na planilha')
     except Exception as error:
-        logging.error(f"Erro ao tentar ler os destinatarios na planilha {path_arquivo}: {error}")
+        user_logger.error(f"Erro ao tentar ler os destinatarios na planilha {path_arquivo}: {error}")
         raise Exception(f'Erro ao tentar ler os destinatarios na planilha: {path_arquivo}')
 
