@@ -8,6 +8,7 @@ from src.criar_diretorios import *
 from src.configurar_logs import user_logger, dev_logger
 from src.cotacao_correios import *
 from src.setup import *
+from src.cotacao_jadlog import *
 
 print("Grupo 5.")
 
@@ -24,6 +25,8 @@ def main():
     preencher_tabela_saida()
 
     correios_cotacao(bot)
+
+    cotacao_jadlog(bot)
 
     # dev_logger.info("Tarefa concluída com sucesso.")  
     # dev_logger.error("Ocorreu um erro ao executar a tarefa.", exc_info=True)  # Log para usuário e dev  
