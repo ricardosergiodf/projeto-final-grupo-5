@@ -25,10 +25,9 @@ def correios_cotacao(bot):
             largura_produto = dimensoes[1].strip()
             comprimento_produto = dimensoes[2].strip()
             peso_produto = row[3]
-
+            
             if "." in str(cep_destino):
                 cep_destino = str(cep_destino).split(".")[0]
-
             user_logger.info("Abrindo página dos Correios.")
             abrir_url(URL_CORREIOS, bot)
 
@@ -138,8 +137,6 @@ def captura_resultado(bot, planilha_saida, index):
 
         user_logger.info(f"Prazo de entrega capturado: {entrega_prazo}")
         user_logger.info(f"Valor total capturado: {valor_total}")
-
-        user_logger.info(f"{valor_total}, linha: {index+1}")
 
         planilha_saida.at[index, planilha_saida.columns[15]] = valor_total
         planilha_saida.at[index, planilha_saida.columns[16]] = entrega_prazo

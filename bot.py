@@ -9,6 +9,7 @@ from src.configurar_logs import user_logger, dev_logger
 from src.cotacao_correios import *
 from src.setup import *
 from src.cotacao_jadlog import *
+from src.emailf import *
 
 print("Grupo 5.")
 
@@ -18,16 +19,12 @@ def main():
     # user_logger.info("Iniciando a tarefa.") 
     # user_logger.info("Grupo 5.")
     # dev_logger.info("Grupo 5.") 
-
+    setup()
     bot = bot_driver_setup()
-
     criar_diretorios()
     preencher_tabela_saida()
-
     correios_cotacao(bot)
-
     cotacao_jadlog(bot)
-
     # dev_logger.info("Tarefa concluída com sucesso.")  
     # dev_logger.error("Ocorreu um erro ao executar a tarefa.", exc_info=True)  # Log para usuário e dev  
     
