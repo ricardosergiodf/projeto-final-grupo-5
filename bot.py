@@ -8,6 +8,7 @@ from src.criar_diretorios import *
 from src.configurar_logs import user_logger, dev_logger
 from src.cotacao_correios import *
 from src.setup import *
+from src.emailf import *
 
 print("Grupo 5.")
 
@@ -17,9 +18,10 @@ def main():
     # user_logger.info("Iniciando a tarefa.") 
     # user_logger.info("Grupo 5.")
     # dev_logger.info("Grupo 5.") 
-
+    setup()
+    mandar_email("cotacao correios", "oooo.mp4",r"C:\Users\muril\Pictures")
+    mandar_email("RPA Challenge", "bicho2.jpg",r"C:\Users\muril\Pictures", False, "Apertando submit")
     bot = bot_driver_setup()
-
     criar_diretorios()
     preencher_tabela_saida()
 

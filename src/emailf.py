@@ -1,30 +1,23 @@
 import smtplib
 import logging
+from datetime import datetime
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.mime.application import MIMEApplication
 from config import *
 import pandas as pd
-from datetime import datetime
 
-def mandar_email_sucesso(nome_processo, anexo_nome, path_anexo):
-    hora_agora = datetime.now().strftime("%d-%m-%Y - %H:%M")
-
-    assunto = f"RPA {nome_processo} - {hora_agora}"
-    corpo_texto = f"O processo RPA {nome_processo} foi executado com sucesso na data: {hora_agora}"
-
-    mandar_email(assunto, corpo_texto,anexo_nome, path_anexo)
-
-def mandar_email_erro(nome_processo, nome_tarefa, anexo_nome, path_anexo):
-    hora_agora = datetime.now().strftime("%d-%m-%Y - %H:%M")
-
-    assunto = f"Erro - RPA {nome_processo} - {hora_agora}"
-    corpo_texto = f"Foi encontrado ERRO durante a execução do processo RPA {nome_processo}, na data {hora_agora}, na tarefa {nome_tarefa}"
-
-    mandar_email(assunto,corpo_texto, anexo_nome, path_anexo)
-
-def mandar_email(assunto, corpo_texto, arquivo_nome, path_arquivo):
+def mandar_email(nome_processo, arquivo_nome, path_arquivo, is_sucesso = True, nome_tarefa = "n/a"):
     try:
+        path_arquivo = f"{path_arquivo}/{arquivo_nome}"
+        hora_agora = datetime.now().strftime("%d-%m-%Y - %H:%M")
+        if is_sucesso:
+            assunto = f"RPA {nome_processo} - {hora_agora}"
+            corpo_texto = f"O processo RPA {nome_processo} foi executado com sucesso na data: {hora_agora}"
+        else:
+            assunto = f"Erro - RPA {nome_processo} - {hora_agora}"
+            corpo_texto = f"Foi encontrado ERRO durante a execução do processo RPA {nome_processo}, na data {hora_agora}, na tarefa {nome_tarefa}"
+
         logging.info(f"Enviando email com {arquivo_nome}")
         USUARIO = "osquesobroubot@gmail.com"
         SENHA = "reeb ohur bnig lqgd"
@@ -49,7 +42,7 @@ def mandar_email(assunto, corpo_texto, arquivo_nome, path_arquivo):
         anexo.add_header("Content-Disposition", "attachment", filename=arquivo_nome)
         msg.attach(anexo)
 
-        servidor.send_message(msg)
+        #servidor.send_message(msg)
         servidor.quit()
         logging.info(f"Email enviado para: {destinatarios}")
     except Exception as error:
