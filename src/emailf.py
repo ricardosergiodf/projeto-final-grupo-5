@@ -42,7 +42,7 @@ def mandar_email(nome_processo, arquivo_nome, path_arquivo, is_sucesso = True, n
         anexo.add_header("Content-Disposition", "attachment", filename=arquivo_nome)
         msg.attach(anexo)
 
-        #servidor.send_message(msg)
+        servidor.send_message(msg)
         servidor.quit()
         logging.info(f"Email enviado para: {destinatarios}")
     except Exception as error:
