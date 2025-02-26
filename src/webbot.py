@@ -1,5 +1,6 @@
 from config import *
 from botcity.web import By
+from botcity.web.util import element_as_select
 
 def abrir_url (url, bot_driver):
     for tentativa in range(MAX_TRY_ERRORS):
@@ -30,5 +31,21 @@ def capturar_cssselector(cssselector_, bot_driver):
 def clicar_xpath(xpath_, bot_driver):
     bot_driver.find_element(xpath_, By.XPATH).click()
 
+def capturar_seletor_xpath(xpath_, bot_driver):
+    seletor = bot_driver.find_element(xpath_, by=By.XPATH)
+    seletor = element_as_select(seletor)
+    return seletor
+
+def selecionar_por_texto(texto, seletor):
+    seletor.select_by_visible_text(texto)
+
+def selecionar_por_valor(valor, seletor):
+    seletor.select_by_value(valor)
+
 def close_browser (bot_driver):
     bot_driver.stop_browser()
+
+def clear_preencher(text, xpath, bot_driver):
+    elemento = bot_driver.findelement(xpath, By.XPATH)
+    elemento.clear()
+    elemento.send_keys(text)

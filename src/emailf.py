@@ -1,5 +1,4 @@
 import smtplib
-import logging
 from datetime import datetime
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
@@ -19,7 +18,7 @@ def mandar_email(nome_processo, arquivo_nome, path_arquivo, is_sucesso = True, n
             assunto = f"Erro - RPA {nome_processo} - {hora_agora}"
             corpo_texto = f"Foi encontrado ERRO durante a execução do processo RPA {nome_processo}, na data {hora_agora}, na tarefa {nome_tarefa}"
 
-        logging.info(f"Enviando email com {arquivo_nome}")
+        user_logger.info(f"Enviando email com {arquivo_nome}")
         USUARIO = "osquesobroubot@gmail.com"
         SENHA = "reeb ohur bnig lqgd"
         
