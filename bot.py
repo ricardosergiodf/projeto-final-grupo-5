@@ -22,9 +22,7 @@ def main():
     bot = bot_driver_setup()
     criar_diretorios()
     preencher_tabela_saida()
-
     correios_cotacao(bot)
-
     # dev_logger.info("Tarefa concluída com sucesso.")  
     # dev_logger.error("Ocorreu um erro ao executar a tarefa.", exc_info=True)  # Log para usuário e dev  
     
