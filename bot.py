@@ -10,6 +10,7 @@ from src.cotacao_correios import *
 from src.setup import *
 from src.cotacao_jadlog import *
 from src.emailf import *
+from src.preencher_input import *
 
 print("Grupo 5.")
 
@@ -20,10 +21,12 @@ def main():
     # user_logger.info("Grupo 5.")
     # dev_logger.info("Grupo 5.") 
     bot = setup()
-    criar_diretorios()
-    preencher_tabela_saida()
+    criar_planilha_saida()
+    df = preencher_com_dados_existentes()
+    preencher_tabela_saida(df)
+    preencher_input(bot)
     correios_cotacao(bot)
-    cotacao_jadlog(bot)
+    #mandar_email("Cadastro de Clientes no Sistema Challenge e Cotação de Novos Pedidos", ARQUIVO_SAIDA)
     # dev_logger.info("Tarefa concluída com sucesso.")  
     # dev_logger.error("Ocorreu um erro ao executar a tarefa.", exc_info=True)  # Log para usuário e dev  
     

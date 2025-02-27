@@ -1,4 +1,5 @@
 import smtplib
+import os
 from datetime import datetime
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
@@ -7,9 +8,10 @@ from config import *
 import pandas as pd
 from src.configurar_logs import user_logger
 
-def mandar_email(nome_processo, arquivo_nome, path_arquivo, is_sucesso = True, nome_tarefa = "n/a"):
+def mandar_email(nome_processo, path_arquivo, is_sucesso = True, nome_tarefa = "n/a"):
     try:
-        path_arquivo = f"{path_arquivo}/{arquivo_nome}"
+        arquivo_nome = os.path.basename(path_arquivo)
+
         hora_agora = datetime.now().strftime("%d-%m-%Y - %H:%M")
         if is_sucesso:
             assunto = f"RPA {nome_processo} - {hora_agora}"

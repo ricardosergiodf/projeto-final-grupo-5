@@ -55,7 +55,7 @@ def consultar_api(cnpj, tentativas=3):
                 "CEP": data.get("cep", ""),
                 "DESCRIÇÃO MATRIZ FILIAL": data.get("descricao_identificador_matriz_filial", ""),
                 "TELEFONE + DDD": data.get("ddd_telefone_1", ""),
-                "E-MAIL": data.get("email", "") if data.get("email") else "N/A",
+                "E-MAIL": data.get("email", "") if data.get("email") else "-",
             }
         
         except requests.exceptions.RequestException as e:
@@ -122,7 +122,7 @@ def preencher_com_dados_existentes():
 
 
 def verificar_campos_vazios(df_saida):
-    """Verifica campos vazios e define um status com os campos vazios para cada linha, preenchendo com 'N/A' quando necessário."""
+    """Verifica campos vazios e define um status com os campos vazios para cada linha, preenchendo com '-' quando necessário."""
 
     campos_vazios = {"Status", "DIMENSÕES CAIXA", "VALOR COTAÇÃO JADLOG", "VALOR COTAÇÃO CORREIOS", "PRAZO DE ENTREGA CORREIOS"}
     status_list = []
@@ -132,8 +132,8 @@ def verificar_campos_vazios(df_saida):
             
             
             for col in df_saida.columns:
-                if col not in campos_vazios and (pd.isna(row[col]) or str(row[col]).strip() == "" or row[col] == "N/A"):
-                    df_saida.at[index, col] = "N/A"
+                if col not in campos_vazios and (pd.isna(row[col]) or str(row[col]).strip() == "" or row[col] == "-"):
+                    df_saida.at[index, col] = "-"
                     campos_faltando.append(col)
 
             status_list.append("Completo" if not campos_faltando else f"Faltando: {', '.join(campos_faltando)}")
@@ -145,14 +145,15 @@ def verificar_campos_vazios(df_saida):
        
 
 
-def preencher_tabela_saida():
+def preencher_tabela_saida(df_saida):
     """Executa todo o fluxo: preenche com dados existentes, consulta API e verifica status."""
     try:
         # Criando a planilha de saída se ela não existir
-        criar_planilha_saida()
 
-        print("Preenchendo tabela com dados existentes...")
-        df_saida = preencher_com_dados_existentes()
+        ## criar_planilha_saida()
+
+        ## print("Preenchendo tabela com dados existentes...")
+        ## df_saida = preencher_com_dados_existentes()
 
         print("Consultando API para preencher campos vazios...")
         df_saida = consultar_e_preencher_api(df_saida)

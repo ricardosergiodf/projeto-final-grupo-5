@@ -3,7 +3,7 @@ from datetime import datetime
 from config import *
 import pandas as pd
 import time
-import logging
+from src.configurar_logs import user_logger
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
@@ -12,21 +12,21 @@ from src.setup import *
 from src.webbot import *
 
 # Configuração do log para debug
-#logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
+#user_logger.basicConfig(level=user_logger.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 
 # Configuração do BotCity WebBot
-bot = bot_driver_setup()
+#bot = bot_driver_setup()
 
 def preencher_input(bot):
     try:
-        logging.info("Iniciando o RPA Challenge.")
+        user_logger.info("Iniciando o RPA Challenge.")
         abrir_url(URL_RPA_CHALLENGE, bot)
         # Abrindo o site
         #bot.browse(URL_RPA_CHALLENGE)
         time.sleep(3)  # Aguarda a página carregar
 
-        logging.info("Abrindo o Excel com os dados.")
-        df = pd.read_excel(r"C:\\RPA\\Processados\\cnpjs_24-02-2025_11-14-49.xlsx", dtype=str)
+        user_logger.info("Abrindo o Excel com os dados.")
+        df = pd.read_excel(ARQUIVO_SAIDA, dtype=str)
 
         total_linhas = len(df)
 
@@ -39,9 +39,9 @@ def preencher_input(bot):
         start_btn = wait.until(EC.element_to_be_clickable((By.XPATH, "//button[contains(text(), 'Start')]")))
         if start_btn:
             start_btn.click()
-            logging.info("Botão 'Start' clicado com sucesso.")
+            user_logger.info("Botão 'Start' clicado com sucesso.")
         else:
-            logging.error("Botão 'Start' não encontrado. Finalizando.")
+            user_logger.error("Botão 'Start' não encontrado. Finalizando.")
             return
             
         time.sleep(2)  # Aguarda a página carregar
@@ -71,15 +71,15 @@ def preencher_input(bot):
                 for label, value in fields:
                     wait.until(EC.presence_of_element_located((By.XPATH, f"//div[label[text()='{label}']]/input"))).send_keys(value)
                 
-                logging.info(f"{tentativa_atual}ª Tentativa: Preenchendo os campos de entrada com a linha {linha_atual}.")
+                user_logger.info(f"{tentativa_atual}ª Tentativa: Preenchendo os campos de entrada com a linha {linha_atual}.")
 
                 # Verificação do botão submit
                 submit_btn = wait.until(EC.element_to_be_clickable((By.XPATH, "//input[@type='submit']")))
                 if submit_btn:
                     submit_btn.click()
-                    logging.info("Botão 'Submit' clicado com sucesso.")
+                    user_logger.info("Botão 'Submit' clicado com sucesso.")
                 else:
-                    logging.error("Botão 'Submit' não encontrado. Finalizando.")
+                    user_logger.error("Botão 'Submit' não encontrado. Finalizando.")
                     return
 
                 tentativa_atual += 1
@@ -88,24 +88,24 @@ def preencher_input(bot):
                 total_preenchidos += 1
 
             if indice_linha >= total_linhas:
-                logging.info("RPA Challenge concluído com sucesso. Finalizando...")
+                user_logger.info("RPA Challenge concluído com sucesso. Finalizando...")
                 break  # Sai do while
 
-            logging.info("Limite de 10 registros atingido. Reiniciando o desafio.")
+            user_logger.info("Limite de 10 registros atingido. Reiniciando o desafio.")
             reset_btn = wait.until(EC.element_to_be_clickable((By.XPATH, "//button[contains(text(), 'Reset')]")))
             reset_btn.click()
             time.sleep(2)       
             start_btn = wait.until(EC.element_to_be_clickable((By.XPATH, "//button[contains(text(), 'Start')]")))
             if start_btn:
                 start_btn.click()
-                logging.info("Botão 'Start' clicado com sucesso.")
+                user_logger.info("Botão 'Start' clicado com sucesso.")
             else:
-                logging.error("Botão 'Start' não encontrado. Finalizando.")
+                user_logger.error("Botão 'Start' não encontrado. Finalizando.")
     
     except Exception as e:
-        logging.error(f"Ocorreu um erro inesperado: {str(e).splitlines()[0]}.")
+        user_logger.error(f"Ocorreu um erro inesperado: {str(e).splitlines()[0]}.")
         
     finally:
         time.sleep(5)
-        logging.info("Finalizando o navegador.")
+        user_logger.info("Finalizando o navegador.")
         close_browser(bot)
