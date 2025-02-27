@@ -13,6 +13,9 @@ URL_RPA_CHALLENGE = 'https://www.rpachallenge.com/'
 URL_CORREIOS = 'https://www2.correios.com.br/sistemas/precosPrazos/'
 URL_JADLOG = 'https://www.jadlog.com.br/jadlog/simulacao'
 
+# CEP de origem
+CEP_ORIGEM = "38182-428"
+
 #Nome arquivos
 NOME_EXCEL_PROCESSAR = "tabela_inicial2.xlsx"
 NOME_EXCEL_DESTINATARIOS = "emails.xlsx"

@@ -8,6 +8,7 @@ from src.criar_diretorios import *
 from src.configurar_logs import user_logger, dev_logger
 from src.cotacao_correios import *
 from src.setup import *
+from src.cotacao_jadlog import *
 from src.emailf import *
 from src.preencher_input import *
 
@@ -26,7 +27,6 @@ def main():
     preencher_input(bot)
     correios_cotacao(bot)
     #mandar_email("Cadastro de Clientes no Sistema Challenge e Cotação de Novos Pedidos", ARQUIVO_SAIDA)
-
     # dev_logger.info("Tarefa concluída com sucesso.")  
     # dev_logger.error("Ocorreu um erro ao executar a tarefa.", exc_info=True)  # Log para usuário e dev  
     
