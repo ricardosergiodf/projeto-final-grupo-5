@@ -80,7 +80,7 @@ def cotacao_jadlog(bot):
             captura_resultado(bot, planilha_saida, index)
 
             close_browser(bot)
-
+        user_logger.info(QUEBRA_LOG)
         return True
     except Exception:
         # error_exception()
@@ -133,7 +133,7 @@ def verificacoes_gerais(row, index, planilha_saida, bot):
     cep_destino = str(row["CEP"])
     user_logger.info(f"Verificando CEP destino: {cep_destino}")
 
-    if not verifica_cep_valido(cep_destino) or cep_destino in ["nan", "N/A"]:
+    if not verifica_cep_valido(cep_destino) or cep_destino in ["nan", "-"]:
         user_logger.warning(f"CEP inválido encontrado na linha {index + 1}.")
         celula_incorreta(planilha_saida, index)
         return False
@@ -141,7 +141,7 @@ def verificacoes_gerais(row, index, planilha_saida, bot):
     tipo_servico = str(row["TIPO DE SERVIÇO JADLOG"])
     user_logger.info(f"Verificando tipo de serviço: {tipo_servico}")
     
-    if tipo_servico in ["nan", "N/A"]:
+    if tipo_servico in ["nan", "-"]:
         user_logger.warning(f"Tipo de serviço inválido na linha {index + 1}. Encerrando browser.")
         celula_incorreta(planilha_saida, index)
         close_browser(bot)
@@ -163,7 +163,7 @@ def verificacoes_gerais(row, index, planilha_saida, bot):
     peso_produto = row["PESO DO PRODUTO"]
     user_logger.info(f"Verificando peso do produto: {peso_produto}")
     
-    if str(peso_produto) in ["nan", "N/A"]:
+    if str(peso_produto) in ["nan", "-"]:
         user_logger.warning(f"Peso inválido encontrado na linha {index + 1}. Encerrando browser.")
         celula_incorreta(planilha_saida, index)
         close_browser(bot)

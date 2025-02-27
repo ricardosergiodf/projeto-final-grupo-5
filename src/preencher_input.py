@@ -19,6 +19,7 @@ from src.webbot import *
 
 def preencher_input(bot):
     try:
+        user_logger.info(QUEBRA_LOG)
         user_logger.info("Iniciando o RPA Challenge.")
         abrir_url(URL_RPA_CHALLENGE, bot)
         # Abrindo o site
@@ -109,3 +110,4 @@ def preencher_input(bot):
         time.sleep(5)
         user_logger.info("Finalizando o navegador.")
         close_browser(bot)
+        user_logger.info(QUEBRA_LOG)

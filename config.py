@@ -6,7 +6,7 @@ import time
 
 MAX_TRY_ERRORS = 3
 FORMATO_DATA = time.strftime("%d-%m-%Y_%H-%M-%S")
-
+QUEBRA_LOG = "-"*50
 #URLS
 URL_BRASIL_API = 'https://brasilapi.com.br/api/cnpj/v1/'
 URL_RPA_CHALLENGE = 'https://www.rpachallenge.com/'
