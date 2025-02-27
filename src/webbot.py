@@ -46,6 +46,6 @@ def close_browser (bot_driver):
     bot_driver.stop_browser()
 
 def clear_preencher(text, xpath, bot_driver):
-    elemento = bot_driver.findelement(xpath, By.XPATH)
+    elemento = bot_driver.find_element(xpath, By.XPATH)
     elemento.clear()
     elemento.send_keys(text)
