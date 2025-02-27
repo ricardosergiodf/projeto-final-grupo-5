@@ -18,13 +18,13 @@ def correios_cotacao(bot):
             if not verificacoes_gerais(row, index, planilha_saida, bot):
                 continue
 
-            cep_destino = str(row[9])
-            tipo_servico = str(row[5])
-            dimensoes = str(row[2]).split(" x ")
+            cep_destino = str(row["CEP"])
+            tipo_servico = str(row["TIPO DE SERVIÇO CORREIOS"])
+            dimensoes = str(row["DIMENSÕES CAIXA"]).split(" x ")
             altura_produto = dimensoes[0].strip()
             largura_produto = dimensoes[1].strip()
             comprimento_produto = dimensoes[2].strip()
-            peso_produto = row[3]
+            peso_produto = row["PESO DO PRODUTO"]
             
             if "." in str(cep_destino):
                 cep_destino = str(cep_destino).split(".")[0]
@@ -88,11 +88,12 @@ def correios_cotacao(bot):
 
 def celula_incorreta(planilha_saida, index):
     user_logger.warning(f"Registrando erro na linha {index + 1}.")
-    planilha_saida.at[index, planilha_saida.columns[15]] = "-"
-    planilha_saida.at[index, planilha_saida.columns[16]] = "-"
 
-    status = planilha_saida.at[index, planilha_saida.columns[17]]
-    planilha_saida.at[index, planilha_saida.columns[17]] = f"{status} | Erro ao realizar a cotação Correios"
+    planilha_saida.at[index, "VALOR COTAÇÃO CORREIOS"] = "-"
+    planilha_saida.at[index, "PRAZO DE ENTREGA CORREIOS"] = "-"
+
+    status = planilha_saida.at[index, "Status"]
+    planilha_saida.at[index, "Status"] = f"{status} | Erro ao realizar a cotação Correios"
 
     user_logger.info("Salvando planilha atualizada.")
     planilha_saida.to_excel(ARQUIVO_SAIDA, index=False)
@@ -138,8 +139,8 @@ def captura_resultado(bot, planilha_saida, index):
         user_logger.info(f"Prazo de entrega capturado: {entrega_prazo}")
         user_logger.info(f"Valor total capturado: {valor_total}")
 
-        planilha_saida.at[index, planilha_saida.columns[15]] = valor_total
-        planilha_saida.at[index, planilha_saida.columns[16]] = entrega_prazo
+        planilha_saida.at[index, "VALOR COTAÇÃO CORREIOS"] = valor_total
+        planilha_saida.at[index, "PRAZO DE ENTREGA CORREIOS"] = entrega_prazo
         return
 
     except Exception as e:
@@ -182,7 +183,7 @@ def verifica_dimensoes(tipo_servico, comprimento_produto, largura_produto, altur
     
     
 def verificacoes_gerais(row, index, planilha_saida, bot):
-    cep_destino = str(row[9])
+    cep_destino = str(row["CEP"])
     user_logger.info(f"Verificando CEP destino: {cep_destino}")
 
     if not verifica_cep_valido(cep_destino) or cep_destino in ["nan", "N/A"]:
@@ -190,7 +191,7 @@ def verificacoes_gerais(row, index, planilha_saida, bot):
         celula_incorreta(planilha_saida, index)
         return False
 
-    tipo_servico = str(row[5])
+    tipo_servico = str(row["TIPO DE SERVIÇO CORREIOS"])
     user_logger.info(f"Verificando tipo de serviço: {tipo_servico}")
     
     if tipo_servico in ["nan", "N/A"]:
@@ -199,7 +200,7 @@ def verificacoes_gerais(row, index, planilha_saida, bot):
         close_browser(bot)
         return False
     
-    dimensoes = str(row[2])
+    dimensoes = str(row["DIMENSÕES CAIXA"])
     user_logger.info("Verificando dimensões do produto.")
     
     if dimensoes in ["nan", "N/A"]:
@@ -221,7 +222,7 @@ def verificacoes_gerais(row, index, planilha_saida, bot):
         close_browser(bot)
         return False
     
-    peso_produto = row[3]
+    peso_produto = row["PESO DO PRODUTO"]
     user_logger.info(f"Verificando peso do produto: {peso_produto}")
     
     if str(peso_produto) in ["nan", "N/A"]:

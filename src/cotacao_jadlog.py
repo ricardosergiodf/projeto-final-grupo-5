@@ -14,18 +14,18 @@ def cotacao_jadlog(bot):
         for index, row in  planilha_saida.iterrows():
             user_logger.info(f"Processando linha {index + 1}.")
 
-            cep_destino = str(row[9])
-            tipo_servico = str(row[4])
-            valor_pedido = str(row[1])
+            cep_destino = str(row["CEP"])
+            tipo_servico = str(row["TIPO DE SERVIÇO JADLOG"])
+            valor_pedido = str(row["VALOR DO PEDIDO"])
             try:
-                dimensoes = str(row[2]).split(" x ")
+                dimensoes = str(row["DIMENSÕES CAIXA"]).split(" x ")
                 altura_produto = dimensoes[0].strip()
                 largura_produto = dimensoes[1].strip()
                 comprimento_produto = dimensoes[2].strip()
             except:
                 dimensoes = ""
             
-            peso_produto = row[3]
+            peso_produto = row["PESO DO PRODUTO"]
 
             if not verificacoes_gerais(row, index, planilha_saida, bot):
                 continue
@@ -88,10 +88,10 @@ def cotacao_jadlog(bot):
     
 def celula_incorreta(planilha_saida, index):
     user_logger.warning(f"Registrando erro na linha {index + 1}.")
-    planilha_saida.at[index, planilha_saida.columns[14]] = "-"
+    planilha_saida.at[index, "VALOR COTAÇÃO JADLOG"] = "-"
 
-    status = planilha_saida.at[index, planilha_saida.columns[17]]
-    planilha_saida.at[index, planilha_saida.columns[17]] = f"{status} | Erro ao realizar a cotação Jadlog"
+    status = planilha_saida.at[index, "Status"]
+    planilha_saida.at[index, "Status"] = f"{status} | Erro ao realizar a cotação Jadlog"
 
     user_logger.info("Salvando planilha atualizada.")
     planilha_saida.to_excel(ARQUIVO_SAIDA, index=False)
@@ -125,12 +125,12 @@ def captura_resultado(bot, planilha_saida, index):
 
     user_logger.info(f"Valor total capturado: {valor_total}")
 
-    planilha_saida.at[index, planilha_saida.columns[14]] = valor_total
+    planilha_saida.at[index, "VALOR COTAÇÃO JADLOG"] = valor_total
     return
 
 
 def verificacoes_gerais(row, index, planilha_saida, bot):
-    cep_destino = str(row[9])
+    cep_destino = str(row["CEP"])
     user_logger.info(f"Verificando CEP destino: {cep_destino}")
 
     if not verifica_cep_valido(cep_destino) or cep_destino in ["nan", "N/A"]:
@@ -138,7 +138,7 @@ def verificacoes_gerais(row, index, planilha_saida, bot):
         celula_incorreta(planilha_saida, index)
         return False
 
-    tipo_servico = str(row[4])
+    tipo_servico = str(row["TIPO DE SERVIÇO JADLOG"])
     user_logger.info(f"Verificando tipo de serviço: {tipo_servico}")
     
     if tipo_servico in ["nan", "N/A"]:
@@ -147,7 +147,7 @@ def verificacoes_gerais(row, index, planilha_saida, bot):
         close_browser(bot)
         return False
     
-    dimensoes = str(row[2])
+    dimensoes = str(row["DIMENSÕES CAIXA"])
     user_logger.info("Verificando dimensões do produto.")  # na cotação jadlog, as dimensões podem ser 0 ou ""
     
     try:
@@ -160,7 +160,7 @@ def verificacoes_gerais(row, index, planilha_saida, bot):
     except:
         user_logger.info(f"Dimensões nulas extraídas.")
     
-    peso_produto = row[3]
+    peso_produto = row["PESO DO PRODUTO"]
     user_logger.info(f"Verificando peso do produto: {peso_produto}")
     
     if str(peso_produto) in ["nan", "N/A"]:
