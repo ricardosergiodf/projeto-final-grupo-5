@@ -145,7 +145,7 @@ def verificar_campos_vazios(df_saida):
        
 
 
-def preencher_tabela_saida(df_saida):
+def processar_brasil_api(df_saida):
     """Executa todo o fluxo: preenche com dados existentes, consulta API e verifica status."""
     try:
         # Criando a planilha de saída se ela não existir
