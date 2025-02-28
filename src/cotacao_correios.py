@@ -5,7 +5,7 @@ from src.configurar_logs import user_logger
 from botcity.web import By
 
 
-def correios_cotacao(bot):
+def cotacao_correios(bot):
     try:
         user_logger.info("Iniciando cotacao dos Correios.")
 

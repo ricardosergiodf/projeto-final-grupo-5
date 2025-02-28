@@ -17,7 +17,7 @@ from src.webbot import *
 # Configuração do BotCity WebBot
 #bot = bot_driver_setup()
 
-def preencher_input(bot):
+def preencher_rpa_challenge(bot):
     try:
         user_logger.info(QUEBRA_LOG)
         user_logger.info("Iniciando o RPA Challenge.")
@@ -107,7 +107,7 @@ def preencher_input(bot):
         user_logger.error(f"Ocorreu um erro inesperado: {str(e).splitlines()[0]}.")
         
     finally:
-        time.sleep(5)
+        time.sleep(2)
         user_logger.info("Finalizando o navegador.")
         close_browser(bot)
         user_logger.info(QUEBRA_LOG)

@@ -12,7 +12,7 @@ from src.cotacao_jadlog import *
 from src.emailf import *
 from src.excelf import *
 from src.capturar_tela import *
-from src.preencher_input import *
+from src.rpa_challenge import *
 
 print("Grupo 5.")
 
@@ -22,15 +22,17 @@ def main():
     try:
         user_logger.info("Iniciando: Cadastro de Clientes no Sistema Challenge e Cotação de Novos Pedidos") 
         user_logger.info("Grupo 5")
+
         bot = setup()
         criar_planilha_saida()
         df = preencher_com_dados_existentes()
-        preencher_tabela_saida(df)
-        preencher_input(bot)
-        correios_cotacao(bot)
+        processar_brasil_api(df)
+        preencher_rpa_challenge(bot)
+        cotacao_correios(bot)
         cotacao_jadlog(bot)
         pintar_menor_cotacao()
         mandar_email("Cadastro de Clientes no Sistema Challenge e Cotação de Novos Pedidos", ARQUIVO_SAIDA)
+
         user_logger.info("Tarefa concluída com sucesso.")
     except Exception as error:
         arquivo_print = capturar_tela(bot)
