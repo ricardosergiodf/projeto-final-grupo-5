@@ -8,25 +8,37 @@ from src.criar_diretorios import *
 from src.configurar_logs import user_logger, dev_logger
 from src.cotacao_correios import *
 from src.setup import *
+from src.cotacao_jadlog import *
+from src.emailf import *
+from src.excelf import *
+from src.capturar_tela import *
+from src.rpa_challenge import *
 
 print("Grupo 5.")
 
 RAISE_NOT_CONNECTED = False
 
 def main():
-    # user_logger.info("Iniciando a tarefa.") 
-    # user_logger.info("Grupo 5.")
-    # dev_logger.info("Grupo 5.") 
+    try:
+        user_logger.info("Iniciando: Cadastro de Clientes no Sistema Challenge e Cotação de Novos Pedidos") 
+        user_logger.info("Grupo 5")
 
-    bot = bot_driver_setup()
+        bot = setup()
+        criar_planilha_saida()
+        df = preencher_com_dados_existentes()
+        processar_brasil_api(df)
+        preencher_rpa_challenge(bot)
+        cotacao_correios(bot)
+        cotacao_jadlog(bot)
+        pintar_menor_cotacao()
+        mandar_email("Cadastro de Clientes no Sistema Challenge e Cotação de Novos Pedidos", ARQUIVO_SAIDA)
 
-    criar_diretorios()
-    preencher_tabela_saida()
+        user_logger.info("Tarefa concluída com sucesso.")
+    except Exception as error:
+        arquivo_print = capturar_tela(bot)
+        user_logger.error(f"Ocorreu um erro durante o processo: {error}")
+        mandar_email("Cadastro de Clientes no Sistema Challenge e Cotação de Novos Pedidos", arquivo_print, False)
 
-    correios_cotacao(bot)
-
-    # dev_logger.info("Tarefa concluída com sucesso.")  
-    # dev_logger.error("Ocorreu um erro ao executar a tarefa.", exc_info=True)  # Log para usuário e dev  
     
 if __name__ == '__main__':
     main()
