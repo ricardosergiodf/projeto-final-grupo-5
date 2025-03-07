@@ -1,7 +1,7 @@
 from src.webbot import *
 from config import *
 import pandas as pd
-from src.configurar_logs import user_logger
+from src.configurar_logs import user_logger, dev_logger
 from botcity.web import By
 
 
@@ -107,7 +107,6 @@ def verifica_cep_valido(cep):
         return len(cep) == 8 and cep.isdigit()
     except ValueError:
         user_logger.warning("CEP Inválido.")
-        # error_exception()
         return False
     
 
@@ -145,7 +144,7 @@ def captura_resultado(bot, planilha_saida, index):
         return
 
     except Exception as e:
-        # error_exception()
+        user_logger.warning("Erro ao capturar o resultado da cotação.")
         return False
 
 
