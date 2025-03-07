@@ -1,90 +1,97 @@
 from src.webbot import *
 from config import *
 import pandas as pd
-from src.configurar_logs import user_logger
+from src.configurar_logs import user_logger, dev_logger
 from botcity.web import By
+from src.setup import *
 
 def cotacao_jadlog(bot):
-    try:
-        user_logger.info("Iniciando cotacao JadLog.")
+    for tentativa in range(1, MAX_TRY_ERRORS + 1):
+        bot = bot_driver_setup()
+        user_logger.info(f"Tentativa {tentativa}")
+        try:
+            user_logger.info("Iniciando cotacao JadLog.")
 
-        user_logger.info("Lendo planilha de saida.")
-        planilha_saida = pd.read_excel(ARQUIVO_SAIDA)
+            user_logger.info("Lendo planilha de saida.")
+            planilha_saida = pd.read_excel(ARQUIVO_SAIDA)
 
-        for index, row in  planilha_saida.iterrows():
-            user_logger.info(f"Processando linha {index + 1}.")
+            for index, row in  planilha_saida.iterrows():
+                user_logger.info(QUEBRA_LOG)
+                user_logger.info(f"Processando linha {index + 1}.")
 
-            cep_destino = str(row["CEP"])
-            tipo_servico = str(row["TIPO DE SERVIÇO JADLOG"])
-            valor_pedido = str(row["VALOR DO PEDIDO"])
-            try:
-                dimensoes = str(row["DIMENSÕES CAIXA"]).split(" x ")
-                altura_produto = dimensoes[0].strip()
-                largura_produto = dimensoes[1].strip()
-                comprimento_produto = dimensoes[2].strip()
-            except:
-                dimensoes = ""
-            
-            peso_produto = row["PESO DO PRODUTO"]
+                cep_destino = str(row["CEP"])
+                tipo_servico = str(row["TIPO DE SERVIÇO JADLOG"])
+                valor_pedido = str(row["VALOR DO PEDIDO"])
+                try:
+                    dimensoes = str(row["DIMENSÕES CAIXA"]).split(" x ")
+                    altura_produto = dimensoes[0].strip()
+                    largura_produto = dimensoes[1].strip()
+                    comprimento_produto = dimensoes[2].strip()
+                except:
+                    dimensoes = ""
+                
+                peso_produto = row["PESO DO PRODUTO"]
 
-            if not verificacoes_gerais(row, index, planilha_saida, bot):
-                continue
+                if not verificacoes_gerais(row, index, planilha_saida, bot):
+                    continue
 
-            user_logger.info("Abrindo a página do Jadlog.")
-            abrir_url(URL_JADLOG, bot)
+                user_logger.info("Abrindo a página do Jadlog.")
+                abrir_url(URL_JADLOG, bot)
 
-            if "." in str(cep_destino):
-                cep_destino = str(cep_destino).split(".")[0]
+                if "." in str(cep_destino):
+                    cep_destino = str(cep_destino).split(".")[0]
 
-            user_logger.info("Preenchendo o cep de origem e cep de destino.")
-            preencher_xpath(CEP_ORIGEM, "//input[@id='origem']", bot)
-            preencher_xpath(cep_destino, "//input[@id='destino']", bot)
+                user_logger.info("Preenchendo o cep de origem e cep de destino.")
+                clear_preencher(CEP_ORIGEM, "//input[@id='origem']", bot)
+                clear_preencher(cep_destino, "//input[@id='destino']", bot)
 
-            user_logger.info("Selecionando tipo de serviço/modalidade.")
-            select_tipo_servico = capturar_seletor_xpath("//select[@id='modalidade']", bot)
+                user_logger.info("Selecionando tipo de serviço/modalidade.")
+                select_tipo_servico = capturar_seletor_xpath("//select[@id='modalidade']", bot)
 
-            if tipo_servico == "JADLOG Econômico":
-                selecionar_por_valor("5", select_tipo_servico)
-            elif tipo_servico == "JADLOG Expresso":
-                selecionar_por_valor("0", select_tipo_servico)
-            else:
-                user_logger.error("Tipo de serviço incorreto.")
-                raise ValueError("Tipo de serviço incorreto.")
+                if tipo_servico == "JADLOG Econômico":
+                    selecionar_por_valor("5", select_tipo_servico)
+                elif tipo_servico == "JADLOG Expresso":
+                    selecionar_por_valor("0", select_tipo_servico)
+                else:
+                    user_logger.error("Tipo de serviço incorreto.")
+                    raise ValueError("Tipo de serviço incorreto.")
 
-            user_logger.info("Clicando no 'Sim' em 'Frete a pagar'.")
-            clicar_xpath("//input[@id='selectFrete:0']", bot)
+                user_logger.info("Clicando no 'Sim' em 'Frete a pagar'.")
+                clicar_xpath("//input[@id='selectFrete:0']", bot)
+                
+                try:
+                    user_logger.info("Preenchendo o peso do produto.")
+                    clear_preencher(str(peso_produto).replace(".", ","), "//input[@id='peso']", bot)
 
-            
-            try:
-                user_logger.info("Preenchendo o peso do produto.")
-                clear_preencher(str(peso_produto).replace(".", ","), "//input[@id='peso']", bot)
+                    user_logger.info("Preenchendo o valor da mercadoria.")
+                    clear_preencher(str(valor_pedido).replace(".", ","), "//input[@id='valor_mercadoria']", bot)
+                except Exception as e:
+                    print(e)
 
-                user_logger.info("Preenchendo o valor da mercadoria.")
-                clear_preencher(str(valor_pedido).replace(".", ","), "//input[@id='valor_mercadoria']", bot)
-            except Exception as e:
-                print(e)
+                if dimensoes != "":
+                    user_logger.info("Preenchendo a largura do produto.")
+                    clear_preencher(str(largura_produto).replace(".", ","), "//input[@id='valLargura']", bot)
 
-            if dimensoes != "":
-                user_logger.info("Preenchendo a largura do produto.")
-                clear_preencher(str(largura_produto).replace(".", ","), "//input[@id='valLargura']", bot)
+                    user_logger.info("Preenchendo a altura do produto.")
+                    clear_preencher(str(altura_produto).replace(".", ","), "//input[@id='valAltura']", bot)
 
-                user_logger.info("Preenchendo a altura do produto.")
-                clear_preencher(str(altura_produto).replace(".", ","), "//input[@id='valAltura']", bot)
+                    user_logger.info("Preenchendo o comprimento do produto.")
+                    clear_preencher(str(comprimento_produto).replace(".", ","), "//input[@id='valComprimento']", bot)
 
-                user_logger.info("Preenchendo o comprimento do produto.")
-                clear_preencher(str(comprimento_produto).replace(".", ","), "//input[@id='valComprimento']", bot)
+                user_logger.info("Clicando em 'Simular'.")
+                clicar_xpath("//input[@value='Simular']", bot)
 
-            user_logger.info("Clicando em 'Simular'.")
-            clicar_xpath("//input[@value='Simular']", bot)
+                captura_resultado(bot, planilha_saida, index)
 
-            captura_resultado(bot, planilha_saida, index)
+                close_browser(bot)
+            user_logger.info(QUEBRA_LOG)
+            return True
+        except Exception as e:
+            user_logger.warning(f"Ocorreu um erro durante a cotação Jadlog na tentativa {tentativa}.")
+            dev_logger.error(f'Erro: {e} na tentativa {tentativa}')
 
-            close_browser(bot)
-        user_logger.info(QUEBRA_LOG)
-        return True
-    except Exception:
-        # error_exception()
-        return False
+    raise Exception(f"Máxima de {MAX_TRY_ERRORS} tentativas alcançada, finalizando cotação Jadlog...")
+
     
 def celula_incorreta(planilha_saida, index):
     user_logger.warning(f"Registrando erro na linha {index + 1}.")
@@ -105,7 +112,6 @@ def verifica_cep_valido(cep):
         return len(cep) == 8 and cep.isdigit()
     except ValueError:
         user_logger.warning("CEP Inválido.")
-        # error_exception()
         return False
     
 
@@ -163,7 +169,7 @@ def verificacoes_gerais(row, index, planilha_saida, bot):
     peso_produto = row["PESO DO PRODUTO"]
     user_logger.info(f"Verificando peso do produto: {peso_produto}")
     
-    if str(peso_produto) in ["nan", "-"]:
+    if pd.isna(peso_produto) or peso_produto in ["nan", "-", None]:
         user_logger.warning(f"Peso inválido encontrado na linha {index + 1}. Encerrando browser.")
         celula_incorreta(planilha_saida, index)
         close_browser(bot)

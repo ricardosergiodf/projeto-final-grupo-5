@@ -1,90 +1,97 @@
 from src.webbot import *
 from config import *
 import pandas as pd
-from src.configurar_logs import user_logger
+from src.configurar_logs import user_logger, dev_logger
 from botcity.web import By
-
+from src.setup import *
 
 def cotacao_correios(bot):
-    try:
-        user_logger.info("Iniciando cotacao dos Correios.")
+    for tentativa in range(1, MAX_TRY_ERRORS + 1):
+        bot = bot_driver_setup()
+        user_logger.info(f"Tentativa {tentativa}")
+        try:
+            user_logger.info("Iniciando cotacao dos Correios.")
 
-        user_logger.info("Lendo planilha de saida.")
-        planilha_saida = pd.read_excel(ARQUIVO_SAIDA)
+            user_logger.info("Lendo planilha de saida.")
+            planilha_saida = pd.read_excel(ARQUIVO_SAIDA)
 
-        for index, row in planilha_saida.iterrows():
-            user_logger.info(f"Processando linha {index + 1}.")
-            
-            if not verificacoes_gerais(row, index, planilha_saida, bot):
-                continue
+            for index, row in planilha_saida.iterrows():
+                user_logger.info(QUEBRA_LOG)
+                user_logger.info(f"Processando linha {index + 1}.")
+                
+                if not verificacoes_gerais(row, index, planilha_saida, bot):
+                    continue
 
-            cep_destino = str(row["CEP"])
-            tipo_servico = str(row["TIPO DE SERVIÇO CORREIOS"])
-            dimensoes = str(row["DIMENSÕES CAIXA"]).split(" x ")
-            altura_produto = dimensoes[0].strip()
-            largura_produto = dimensoes[1].strip()
-            comprimento_produto = dimensoes[2].strip()
-            peso_produto = row["PESO DO PRODUTO"]
-            
-            if "." in str(cep_destino):
-                cep_destino = str(cep_destino).split(".")[0]
-            user_logger.info("Abrindo página dos Correios.")
-            abrir_url(URL_CORREIOS, bot)
+                cep_destino = str(row["CEP"])
+                tipo_servico = str(row["TIPO DE SERVIÇO CORREIOS"])
+                dimensoes = str(row["DIMENSÕES CAIXA"]).split(" x ")
+                altura_produto = dimensoes[0].strip()
+                largura_produto = dimensoes[1].strip()
+                comprimento_produto = dimensoes[2].strip()
+                peso_produto = row["PESO DO PRODUTO"]
+                
+                if "." in str(cep_destino):
+                    cep_destino = str(cep_destino).split(".")[0]
+                user_logger.info("Abrindo página dos Correios.")
+                abrir_url(URL_CORREIOS, bot)
 
-            user_logger.info("Preenchendo o cep de origem e cep de destino.")
-            preencher_xpath(CEP_ORIGEM, "//input[@name ='cepOrigem']", bot)
-            preencher_xpath(cep_destino, "//input[@name ='cepDestino']", bot)
-            
-            user_logger.info("Selecionando tipo de serviço.")
-            select_tipo_servico = capturar_seletor_xpath("//select[@name ='servico']", bot)
+                user_logger.info("Preenchendo o cep de origem e cep de destino.")
+                preencher_xpath(CEP_ORIGEM, "//input[@name ='cepOrigem']", bot)
+                preencher_xpath(cep_destino, "//input[@name ='cepDestino']", bot)
+                
+                user_logger.info("Selecionando tipo de serviço.")
+                select_tipo_servico = capturar_seletor_xpath("//select[@name ='servico']", bot)
 
-            if tipo_servico == "PAC":
-                selecionar_por_texto("PAC", select_tipo_servico)
-            elif tipo_servico == "SEDEX":
-                selecionar_por_texto("SEDEX", select_tipo_servico)
-            else:
-                user_logger.error("Tipo de serviço incorreto.")
-                raise ValueError("Tipo de serviço incorreto.")
-            
-            bot.wait(1000)
+                if tipo_servico == "PAC":
+                    selecionar_por_texto("PAC", select_tipo_servico)
+                elif tipo_servico == "SEDEX":
+                    selecionar_por_texto("SEDEX", select_tipo_servico)
+                else:
+                    user_logger.error("Tipo de serviço incorreto.")
+                    raise ValueError("Tipo de serviço incorreto.")
+                
+                bot.wait(1000)
 
-            user_logger.info("Selecionando tipo de embalagem.")
-            select_embalagem = capturar_seletor_xpath("//select[@name ='embalagem1']", bot)
-            selecionar_por_texto("Outra Embalagem", select_embalagem)
+                user_logger.info("Selecionando tipo de embalagem.")
+                select_embalagem = capturar_seletor_xpath("//select[@name ='embalagem1']", bot)
+                selecionar_por_texto("Outra Embalagem", select_embalagem)
 
-            bot.wait(1000)
+                bot.wait(1000)
 
-            if peso_produto == "0.4":
-                peso_produto = float(peso_produto)
-            else:
-                peso_produto = int(peso_produto)
+                if peso_produto == "0.4":
+                    peso_produto = float(peso_produto)
+                else:
+                    peso_produto = int(peso_produto)
 
-            user_logger.info("Preenchendo dimensoes e peso.")
-            preencher_xpath(altura_produto, "//input[@name ='Altura']", bot)
-            preencher_xpath(largura_produto, "//input[@name ='Largura']", bot)
-            preencher_xpath(comprimento_produto, "//input[@name='Comprimento']", bot)
+                user_logger.info("Preenchendo dimensoes e peso.")
+                preencher_xpath(altura_produto, "//input[@name ='Altura']", bot)
+                preencher_xpath(largura_produto, "//input[@name ='Largura']", bot)
+                preencher_xpath(comprimento_produto, "//input[@name='Comprimento']", bot)
 
-            bot.wait(1000)
-            
-            select_peso = capturar_seletor_xpath("//select[@name ='peso']", bot)
-            selecionar_por_texto (str(peso_produto), select_peso)
+                bot.wait(1000)
+                
+                select_peso = capturar_seletor_xpath("//select[@name ='peso']", bot)
+                selecionar_por_texto (str(peso_produto), select_peso)
 
-            user_logger.info("Clicando no botão Calcular.")
-            clicar_xpath("//input[@name ='Calcular']", bot)  
+                user_logger.info("Clicando no botão Calcular.")
+                clicar_xpath("//input[@name ='Calcular']", bot)  
 
-            captura_resultado(bot, planilha_saida, index)
+                captura_resultado(bot, planilha_saida, index)
 
-            user_logger.info("Salvando planilha atualizada.")
-            planilha_saida.to_excel(ARQUIVO_SAIDA, index=False)
+                user_logger.info("Salvando planilha atualizada.")
+                planilha_saida.to_excel(ARQUIVO_SAIDA, index=False)
 
-            close_browser(bot)
+                close_browser(bot)
 
-        user_logger.info("Cotação finalizada com sucesso.")
-        user_logger.info(QUEBRA_LOG)
-        return True
+            user_logger.info("Cotação finalizada com sucesso.")
+            user_logger.info(QUEBRA_LOG)
+            return True
 
-    except Exception as e:
-        return False
+        except Exception as e:
+            user_logger.warning(f"Ocorreu um erro durante a cotação Correios na tentativa {tentativa}.")
+            dev_logger.error(f'Erro: {e} na tentativa {tentativa}')
+        
+    raise Exception(f"Máxima de {MAX_TRY_ERRORS} tentativas alcançada, finalizando cotação Correios...")
 
 
 def celula_incorreta(planilha_saida, index):
@@ -101,13 +108,13 @@ def celula_incorreta(planilha_saida, index):
     
     return
 
+
 def verifica_cep_valido(cep):
     try:
         cep = str(cep).replace("-", "").split(".")[0]
         return len(cep) == 8 and cep.isdigit()
     except ValueError:
         user_logger.warning("CEP Inválido.")
-        # error_exception()
         return False
     
 
@@ -145,7 +152,7 @@ def captura_resultado(bot, planilha_saida, index):
         return
 
     except Exception as e:
-        # error_exception()
+        user_logger.warning("Erro ao capturar o resultado da cotação.")
         return False
 
 
