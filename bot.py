@@ -40,6 +40,5 @@ def main():
         dev_logger.error(traceback.format_exc())
         mandar_email("Cadastro de Clientes no Sistema Challenge e Cotação de Novos Pedidos", arquivo_print, False, tarefa_atual)
 
-    
 if __name__ == '__main__':
     main()
