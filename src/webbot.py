@@ -18,12 +18,17 @@ def abrir_url (url, bot_driver):
         user_logger.info(f'Nao foi possivel abrir o navegador apos o maximo de tentivas')
         raise Exception(f'Erro ao iniciar o site {url}')
    
-def preencher_xpath(text, xpath_, bot_driver):
-    bot_driver.find_element(xpath_, By.XPATH, waiting_time = 30000).send_keys(text)
-   
+def encontrar_elemento_xpath(xpath_, bot_driver):
+    elemento = bot_driver.find_element(xpath_, By.XPATH, waiting_time = 30000)
+    return elemento
 
+def preencher_xpath(text, xpath_, bot_driver):
+    elemento = encontrar_elemento_xpath(xpath_, bot_driver)
+    elemento.send_keys(text)
+   
 def capturar_xpath(xpath_, bot_driver):
-    texto = bot_driver.find_element(xpath_, By.XPATH, waiting_time = 30000).text
+    elemento = encontrar_elemento_xpath(xpath_, bot_driver)
+    texto = elemento.text
     return texto
 
 def capturar_cssselector(cssselector_, bot_driver):
@@ -31,10 +36,11 @@ def capturar_cssselector(cssselector_, bot_driver):
     return texto
 
 def clicar_xpath(xpath_, bot_driver):
-    bot_driver.find_element(xpath_, By.XPATH, waiting_time = 30000).click()
+    elemento = encontrar_elemento_xpath(xpath_, bot_driver)
+    elemento.click()
 
 def capturar_seletor_xpath(xpath_, bot_driver):
-    seletor = bot_driver.find_element(xpath_, by=By.XPATH, waiting_time = 30000)
+    seletor = encontrar_elemento_xpath(xpath_, bot_driver)
     seletor = element_as_select(seletor)
     return seletor
 

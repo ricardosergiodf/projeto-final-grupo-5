@@ -49,3 +49,5 @@ COLUNAS_SAIDA = [
     "VALOR COTAÇÃO JADLOG", "VALOR COTAÇÃO CORREIOS",
     "PRAZO DE ENTREGA CORREIOS", "Status"
 ]
+
+tarefa_atual = ""
