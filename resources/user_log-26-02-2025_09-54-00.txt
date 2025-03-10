@@ -1,0 +1,1 @@
+2025-02-26 09:54:00,217 - INFO - Iniciando a tarefa.

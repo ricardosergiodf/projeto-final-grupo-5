@@ -1,0 +1,6 @@
+2025-02-26 10:05:27,356 - ERROR - test.py:36 - Ocorreu um erro ao executar a tarefa.
+Traceback (most recent call last):
+  File "c:\Users\Nicolas\Desktop\TrabalhoCompass\test_api\test.py", line 33, in executar_tarefa
+    resultado = 10 / 0  # Simulação de erro
+                ~~~^~~
+ZeroDivisionError: division by zero
