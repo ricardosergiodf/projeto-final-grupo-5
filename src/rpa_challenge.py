@@ -5,8 +5,19 @@ from src.setup import *
 from src.webbot import *
 
 def preencher_rpa_challenge():
+    """
+    Executa o preenchimento automatizado do RPA Challenge utilizando dados de um arquivo Excel.
+
+    Args:
+        Nenhum argumento é necessário para a execução.
+
+    Exceções:
+        Exception: Caso o botão 'Start' ou 'Submit' não seja encontrado.
+
+    """
     tarefa_atual = "Preencher RPA Challenge"
     tentativas_navegador = 0
+    
     while tentativas_navegador < MAX_TRY_ERRORS:
         bot = bot_driver_setup()
         try:
@@ -14,34 +25,38 @@ def preencher_rpa_challenge():
             user_logger.info("Iniciando o RPA Challenge.")
             abrir_url(URL_RPA_CHALLENGE, bot)
 
-            user_logger.info("Abrindo o Excel com os dados.")
-            df = pd.read_excel(ARQUIVO_SAIDA, dtype=str)
+            user_logger.info("Abrindo o Excel com os dados em segundo plano.")
+            # Carrega os dados do Excel como strings
+            df = pd.read_excel(ARQUIVO_SAIDA, dtype=str)  
 
             total_linhas = len(df)
             print(df)
             
-            # Verificação do botão start
-
+            # Verifica a existência do botão 'Start'
             start_btn = encontrar_elemento_xpath("//button[contains(text(), 'Start')]", bot)
             if start_btn:
                 start_btn.click()
                 user_logger.info("Botão 'Start' clicado com sucesso.")
             else:
                 user_logger.error("Botão 'Start' não encontrado. Finalizando.")
-                raise Exception ("Botão 'Start' não encontrado.")
+                raise Exception("Botão 'Start' não encontrado.")
 
             # Contadores
-            tentativa_atual = 1
-            linha_atual = 2
-            indice_linha = 0
-            total_preenchidos = 0
+            tentativa_atual = 1  # Número da tentativa atual
+            linha_atual = 2  # Índice da linha do Excel
+            indice_linha = 0  # Índice real das linhas do DataFrame
+            total_preenchidos = 0  # Contador de formulários preenchidos
 
             while indice_linha < total_linhas:
-                for _ in range(10):
+                # Processa 10 registros por vez
+                for _ in range(10):  
                     if indice_linha >= total_linhas:
                         break
 
-                    row = df.iloc[indice_linha]
+                    # Obtém a linha atual do DataFrame
+                    row = df.iloc[indice_linha]  
+                    
+                    # Mapeia os campos do formulário com os dados do Excel
                     fields = [
                         ("First Name", row['RAZÃO SOCIAL']),
                         ("Last Name", row['Status']),
@@ -52,19 +67,20 @@ def preencher_rpa_challenge():
                         ("Phone Number", row['TELEFONE + DDD'])
                     ]
 
+                    # Preenche os campos do formulário
                     for label, value in fields:
                         preencher_xpath(value, f"//div[label[text()='{label}']]/input", bot)
                     
                     user_logger.info(f"{tentativa_atual}ª Tentativa: Preenchendo os campos de entrada com a linha {linha_atual}.")
 
-                    # Verificação do botão submit
+                    # Verifica a existência do botão 'Submit'
                     submit_btn = encontrar_elemento_xpath("//input[@type='submit']", bot)
                     if submit_btn:
                         submit_btn.click()
                         user_logger.info("Botão 'Submit' clicado com sucesso.")
                     else:
                         user_logger.error("Botão 'Submit' não encontrado. Finalizando.")
-                        raise Exception ("Botão 'Start' não encontrado.")
+                        raise Exception("Botão 'Submit' não encontrado.")
 
                     tentativa_atual += 1
                     linha_atual += 1
@@ -73,27 +89,31 @@ def preencher_rpa_challenge():
 
                 if indice_linha >= total_linhas:
                     user_logger.info("RPA Challenge concluído com sucesso. Finalizando...")
-                    break  # Sai do while
+                    break  # Sai do loop
 
                 user_logger.info("Limite de 10 registros atingido. Reiniciando o desafio.")
-                #wait.until(EC.element_to_be_clickable((By.XPATH, "//button[contains(text(), 'Reset')]"))).click()
+                
+                # No caso de haver mais de 10 registros, clica no botão 'Reset' para reiniciar o desafio
                 clicar_xpath("//button[contains(text(), 'Reset')]", bot)
 
-                #start_btn = wait.until(EC.element_to_be_clickable((By.XPATH, "//button[contains(text(), 'Start')]")))
+                # Novamente verifica a existência do botão 'Start'
                 start_btn = encontrar_elemento_xpath("//button[contains(text(), 'Start')]", bot)
                 if start_btn:
                     start_btn.click()
                     user_logger.info("Botão 'Start' clicado com sucesso.")
                 else:
                     user_logger.error("Botão 'Start' não encontrado. Finalizando.")
-                    raise Exception ("Botão 'Start' não encontrado.")
+                    raise Exception("Botão 'Start' não encontrado.")
         
-            close_browser(bot)
+            # Fecha o navegador ao final do processo
+            close_browser(bot)  
             break
 
         except Exception as e:
-            tentativas_navegador += 1
-            raise Exception (f"{str(e).splitlines()[0]}.")
+            # Incrementa a contagem de tentativas
+            tentativas_navegador += 1  
+            # Lança um erro com a primeira linha da exceção
+            raise Exception(f"{str(e).splitlines()[0]}.")  
             
         finally:
             user_logger.info("Finalizando o navegador.")
