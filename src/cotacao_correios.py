@@ -62,7 +62,7 @@ def cotacao_correios(bot):
                 else:
                     peso_produto = int(peso_produto)
 
-                user_logger.info("Preenchendo dimensoes e peso.")
+                user_logger.info("Preenchendo dimensões e peso.")
                 preencher_xpath(altura_produto, "//input[@name ='Altura']", bot)
                 preencher_xpath(largura_produto, "//input[@name ='Largura']", bot)
                 preencher_xpath(comprimento_produto, "//input[@name='Comprimento']", bot)
@@ -100,7 +100,10 @@ def celula_incorreta(planilha_saida, index):
     planilha_saida.at[index, "PRAZO DE ENTREGA CORREIOS"] = "-"
 
     status = planilha_saida.at[index, "Status"]
-    planilha_saida.at[index, "Status"] = f"{status} | Erro ao realizar a cotação Correios"
+    if status in ["nan", "N/A", "-", "", " "]:
+        planilha_saida.at[index, "Status"] = "Erro ao realizar a cotação Correios"
+    else:
+        planilha_saida.at[index, "Status"] = f"{status} | Erro ao realizar a cotação Correios"
 
     user_logger.info("Salvando planilha atualizada.")
     planilha_saida.to_excel(ARQUIVO_SAIDA, index=False)

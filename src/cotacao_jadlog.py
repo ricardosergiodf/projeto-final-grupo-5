@@ -11,7 +11,7 @@ def cotacao_jadlog(bot):
         try:
             user_logger.info("Iniciando cotacao JadLog.")
 
-            user_logger.info("Lendo planilha de saida.")
+            user_logger.info("Lendo planilha de saída.")
             planilha_saida = pd.read_excel(ARQUIVO_SAIDA)
 
             for index, row in  planilha_saida.iterrows():
@@ -97,7 +97,10 @@ def celula_incorreta(planilha_saida, index):
     planilha_saida.at[index, "VALOR COTAÇÃO JADLOG"] = "-"
 
     status = planilha_saida.at[index, "Status"]
-    planilha_saida.at[index, "Status"] = f"{status} | Erro ao realizar a cotação Jadlog"
+    if status in ["nan", "N/A", "-", "", " "]:
+        planilha_saida.at[index, "Status"] = "Erro ao realizar a cotação Jadlog"
+    else:
+        planilha_saida.at[index, "Status"] = f"{status} | Erro ao realizar a cotação Jadlog"
 
     user_logger.info("Salvando planilha atualizada.")
     planilha_saida.to_excel(ARQUIVO_SAIDA, index=False)

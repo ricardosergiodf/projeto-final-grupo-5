@@ -36,7 +36,7 @@ def main():
         
     except Exception as error:
         arquivo_print = capturar_tela(bot)
-        tarefa_atual = traceback.extract_tb(error.__traceback__)[-1].name #Utiliza do traceback para retornar o nome da funcao que gerou erro
+        tarefa_atual = traceback.extract_tb(error.__traceback__)[-1].name # Utiliza do traceback para retornar o nome da funcao que gerou erro
         tarefa_atual = tarefa_atual.replace("_", " ") 
         user_logger.error(f"Ocorreu um erro durante o processo {tarefa_atual}: {error}")
         dev_logger.error(traceback.format_exc())
