@@ -2,7 +2,6 @@ from src.webbot import *
 from config import *
 import pandas as pd
 from src.configurar_logs import user_logger, dev_logger
-from botcity.web import By
 from src.setup import *
 
 def cotacao_correios(bot):

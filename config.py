@@ -6,6 +6,7 @@ import time
 
 MAXIMOS_TENTATIVAS_ERRO = 3
 FORMATO_DATA = time.strftime("%d-%m-%Y_%H-%M-%S")
+DIA_ATUAL = time.strftime("%d-%m-%Y")
 QUEBRA_LOG = "-"*50
 
 #URLS
@@ -28,7 +29,7 @@ PATH_FALHAS = rf"{PATH_RPA}\Falhas"
 PATH_PROCESSAR = rf"{PATH_RPA}\Processar"
 PATH_PROCESSADOS = rf"{PATH_RPA}\Processados"
 PATH_FALHAS = rf"{PATH_RPA}\Falhas"
-PATH_LOGS = rf"{PATH_RPA}\Logs"
+PATH_LOGS = rf"{PATH_RPA}\Logs\{DIA_ATUAL}"
 PATH_DEVLOGS = rf"{PATH_LOGS}\DevLogs"
 PATH_PROCESSADOS = rf"{PATH_RPA}\Processados"
 PATH_PROCESSAR = rf"{PATH_RPA}\Processar"
