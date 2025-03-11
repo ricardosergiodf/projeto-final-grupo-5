@@ -92,7 +92,7 @@ def preencher_rpa_challenge():
                     break  # Sai do loop
 
                 user_logger.info("Limite de 10 registros atingido. Reiniciando o desafio.")
-                
+              
                 # No caso de haver mais de 10 registros, clica no botão 'Reset' para reiniciar o desafio
                 clicar_xpath("//button[contains(text(), 'Reset')]", bot)
 
@@ -112,9 +112,9 @@ def preencher_rpa_challenge():
         except Exception as e:
             # Incrementa a contagem de tentativas
             tentativas_navegador += 1  
-            # Lança um erro com a primeira linha da exceção
-            raise Exception(f"{str(e).splitlines()[0]}.")  
             
         finally:
             user_logger.info("Finalizando o navegador.")
             user_logger.info(QUEBRA_LOG)
+
+    raise Exception (f"Maximo de tentativas de executar preencher_rpa_challenge alcancada") #

@@ -18,7 +18,6 @@ from src.rpa_challenge import *
 RAISE_NOT_CONNECTED = False
 
 def main():
-
     try:
         user_logger.info("Iniciando: Cadastro de Clientes no Sistema Challenge e Cotação de Novos Pedidos")
         user_logger.info("Grupo 5")
@@ -34,9 +33,12 @@ def main():
         mandar_email("Cadastro de Clientes no Sistema Challenge e Cotação de Novos Pedidos", ARQUIVO_SAIDA)
 
         user_logger.info("Processo concluído com sucesso.")
+        
     except Exception as error:
         arquivo_print = capturar_tela(bot)
-        user_logger.error(f"Ocorreu um erro durante o processo {error}: {error}")
+        tarefa_atual = traceback.extract_tb(error.__traceback__)[-1].name #Utiliza do traceback para retornar o nome da funcao que gerou erro
+        tarefa_atual = tarefa_atual.replace("_", " ") 
+        user_logger.error(f"Ocorreu um erro durante o processo {tarefa_atual}: {error}")
         dev_logger.error(traceback.format_exc())
         mandar_email("Cadastro de Clientes no Sistema Challenge e Cotação de Novos Pedidos", arquivo_print, False, tarefa_atual)
 
