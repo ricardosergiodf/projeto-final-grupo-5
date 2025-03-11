@@ -1,5 +1,4 @@
 import os
-import logging
 from config import *
 
 def criar_diretorios():
@@ -28,6 +27,5 @@ def criar_diretorios():
         return True
     
     except Exception:
-        # error_exception() # chama função de erro que também já faz o log do erro
-        return False
+        raise Exception("Erro ao criar diretórios.")
     

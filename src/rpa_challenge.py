@@ -15,10 +15,9 @@ def preencher_rpa_challenge():
         Exception: Caso o botão 'Start' ou 'Submit' não seja encontrado.
 
     """
-    tarefa_atual = "Preencher RPA Challenge"
     tentativas_navegador = 0
     
-    while tentativas_navegador < MAX_TRY_ERRORS:
+    while tentativas_navegador < MAXIMOS_TENTATIVAS_ERRO:
         bot = bot_driver_setup()
         try:
             user_logger.info(QUEBRA_LOG)
@@ -89,7 +88,8 @@ def preencher_rpa_challenge():
 
                 if indice_linha >= total_linhas:
                     user_logger.info("RPA Challenge concluído com sucesso. Finalizando...")
-                    break  # Sai do loop
+                    close_browser(bot)  
+                    return  # Sai da funcao
 
                 user_logger.info("Limite de 10 registros atingido. Reiniciando o desafio.")
               
@@ -111,10 +111,11 @@ def preencher_rpa_challenge():
 
         except Exception as e:
             # Incrementa a contagem de tentativas
+            user_logger.info(f"erro: {e}")
             tentativas_navegador += 1  
             
         finally:
             user_logger.info("Finalizando o navegador.")
             user_logger.info(QUEBRA_LOG)
 
-    raise Exception (f"Maximo de tentativas de executar preencher_rpa_challenge alcancada") #
+    raise Exception (f"Maximo de tentativas de executar preencher_rpa_challenge alcancada")

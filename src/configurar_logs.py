@@ -1,16 +1,16 @@
 import logging
 import os
-import time
 from botcity.maestro import *
 from config import *
+from src.criar_diretorios import *
 
 maestro = BotMaestroSDK.from_sys_args()
+
+criar_diretorios()
 
 # Define o diretório onde os logs serão salvos
 log_filepath = os.path.join(PATH_LOGS)
 dev_log_filepath = os.path.join(PATH_DEVLOGS)
-
-FORMATO_DATA = time.strftime("%d-%m-%Y_%H-%M-%S")
 
 # Criando logger para o usuário
 user_logger = logging.getLogger("user_logger")
