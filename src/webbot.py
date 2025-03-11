@@ -4,7 +4,7 @@ from botcity.web.util import element_as_select
 from src.configurar_logs import user_logger
 
 def abrir_url (url, bot_driver):
-    for tentativa in range(MAX_TRY_ERRORS):
+    for tentativa in range(MAXIMOS_TENTATIVAS_ERRO):
         user_logger.info(f"Abrindo navegador: tentativa {tentativa+1}")
         try:
             bot_driver.browse(url)
@@ -14,7 +14,7 @@ def abrir_url (url, bot_driver):
             user_logger.info(f'Apos {tentativa+1} tentativa; Erro ao abrir o site {url}: {error}')
             print(f'Tentativa {tentativa+1}; Erro ao abrir o site {url}: {error}')
 
-    if tentativa >= MAX_TRY_ERRORS:
+    if tentativa >= MAXIMOS_TENTATIVAS_ERRO:
         user_logger.info(f'Nao foi possivel abrir o navegador apos o maximo de tentivas')
         raise Exception(f'Erro ao iniciar o site {url}')
    

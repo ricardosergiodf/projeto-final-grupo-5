@@ -12,13 +12,13 @@ def consultar_api(cnpj):
     headers = {"User-Agent": "Mozilla/5.0"}
     erro = "Erro ao consultar API"
 
-    for tentativa in range(MAX_TRY_ERRORS):
+    for tentativa in range(MAXIMOS_TENTATIVAS_ERRO):
         try:
             response = requests.get(url, headers=headers, timeout=10)
             print(f"RESPONSE: {response.status_code}")
             
             if response.status_code == 429:  # Erro de muitas requisições
-                user_logger.error(f"Erro 429 - Aguardando antes de tentar novamente... ({tentativa + 1}/{MAX_TRY_ERRORS})")
+                user_logger.error(f"Erro 429 - Aguardando antes de tentar novamente... ({tentativa + 1}/{MAXIMOS_TENTATIVAS_ERRO})")
                 error_msg = "Erro 429 muitas requisições"
                 time.sleep(5)
                 continue
@@ -86,7 +86,7 @@ def consultar_e_preencher_api(df_saida):
 def verificar_campos_vazios(df_saida):
     """Verifica campos vazios e define um status com os campos vazios para cada linha, preenchendo com '-' quando necessário."""
 
-    campos_vazios = {"Status", "TELEFONE + DDD", "E-MAIL", "DIMENSÕES CAIXA", "VALOR COTAÇÃO JADLOG", "VALOR COTAÇÃO CORREIOS", "PRAZO DE ENTREGA CORREIOS"} 
+    campos_vazios = {"Status", "DIMENSÕES CAIXA", "VALOR COTAÇÃO JADLOG", "VALOR COTAÇÃO CORREIOS", "PRAZO DE ENTREGA CORREIOS"} 
     status_list = []
     try:
         user_logger.info("Verificando campos vazios e definindo status.")

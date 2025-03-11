@@ -29,7 +29,7 @@ def main():
         preencher_rpa_challenge()
         cotacao_correios(bot)
         cotacao_jadlog(bot)
-        pintar_menor_cotacao()
+        finalizar_planilha()
         mandar_email("Cadastro de Clientes no Sistema Challenge e Cotação de Novos Pedidos", ARQUIVO_SAIDA)
 
         user_logger.info("Processo concluído com sucesso.")

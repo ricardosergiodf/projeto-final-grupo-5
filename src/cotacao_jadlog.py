@@ -6,7 +6,7 @@ from botcity.web import By
 from src.setup import *
 
 def cotacao_jadlog(bot):
-    for tentativa in range(1, MAX_TRY_ERRORS + 1):
+    for tentativa in range(1, MAXIMOS_TENTATIVAS_ERRO + 1):
         bot = bot_driver_setup()
         user_logger.info(f"Tentativa {tentativa}")
         try:
@@ -90,7 +90,7 @@ def cotacao_jadlog(bot):
             user_logger.warning(f"Ocorreu um erro durante a cotação Jadlog na tentativa {tentativa}.")
             dev_logger.error(f'Erro: {e} na tentativa {tentativa}')
 
-    raise Exception(f"Máxima de {MAX_TRY_ERRORS} tentativas alcançada, finalizando cotação Jadlog...")
+    raise Exception(f"Máxima de {MAXIMOS_TENTATIVAS_ERRO} tentativas alcançada, finalizando cotação Jadlog...")
 
     
 def celula_incorreta(planilha_saida, index):
