@@ -5,9 +5,8 @@ from src.setup import *
 from src.webbot import *
 
 def preencher_rpa_challenge():
-    tarefa_atual = "Preencher RPA Challenge"
     tentativas_navegador = 0
-    while tentativas_navegador < MAX_TRY_ERRORS:
+    while tentativas_navegador < MAXIMOS_TENTATIVAS_ERRO:
         bot = bot_driver_setup()
         try:
             user_logger.info(QUEBRA_LOG)
@@ -76,10 +75,8 @@ def preencher_rpa_challenge():
                     break  # Sai do while
 
                 user_logger.info("Limite de 10 registros atingido. Reiniciando o desafio.")
-                #wait.until(EC.element_to_be_clickable((By.XPATH, "//button[contains(text(), 'Reset')]"))).click()
                 clicar_xpath("//button[contains(text(), 'Reset')]", bot)
 
-                #start_btn = wait.until(EC.element_to_be_clickable((By.XPATH, "//button[contains(text(), 'Start')]")))
                 start_btn = encontrar_elemento_xpath("//button[contains(text(), 'Start')]", bot)
                 if start_btn:
                     start_btn.click()
@@ -93,8 +90,10 @@ def preencher_rpa_challenge():
 
         except Exception as e:
             tentativas_navegador += 1
-            raise Exception (f"{str(e).splitlines()[0]}.")
+            user_logger.info(f"Erro: {e}")
             
         finally:
             user_logger.info("Finalizando o navegador.")
             user_logger.info(QUEBRA_LOG)
+
+    raise Exception (f"Maximo de tentativas de executar preencher_rpa_challenge alcancada") #

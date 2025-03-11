@@ -20,7 +20,6 @@ def mandar_email(nome_processo, path_arquivo, is_sucesso = True, nome_tarefa = "
 
     """
 
-    tarefa_atual = "Enviar email"
     try:
         arquivo_nome = os.path.basename(path_arquivo)
         user_logger.info(f"Enviando email com o arquivo: {arquivo_nome}")
@@ -66,6 +65,7 @@ def mandar_email(nome_processo, path_arquivo, is_sucesso = True, nome_tarefa = "
         
 
 def capturar_destinatarios(path_arquivo, coluna):
+    #Captura os emails na planilha emails.xlsx que serao utilizado como destinarios
     try:
         excel = pd.read_excel(path_arquivo)
         if coluna in excel.columns:
