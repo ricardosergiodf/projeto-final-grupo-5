@@ -1,8 +1,8 @@
 from botcity.maestro import *
 import time
 #from src import criar-diretorios
-
 maestro = BotMaestroSDK.from_sys_args()
+execution = maestro.get_execution()
 
 MAXIMOS_TENTATIVAS_ERRO = 3
 FORMATO_DATA = time.strftime("%d-%m-%Y_%H-%M-%S")

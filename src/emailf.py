@@ -55,7 +55,12 @@ def mandar_email(nome_processo, path_arquivo, is_sucesso = True, nome_tarefa = "
         servidor.send_message(msg)
         servidor.quit()
         user_logger.info(f"Email enviado para: {destinatarios}")
-
+        #Coloca nos resultados do osquestrador o arquivo
+        maestro.post_artifact(
+            task_id=execution.task_id,
+            artifact_name=arquivo_nome,
+            filepath=path_arquivo
+        )
     except Exception as error:
         user_logger.error(f"Erro ao tentar enviar o email: {error}")
         raise Exception('falha ao tentar enviar o Email')

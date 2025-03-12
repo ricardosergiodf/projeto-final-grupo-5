@@ -27,7 +27,6 @@ def capturar_tela():
     
 def maestro_finalizar_sucesso():
     #Manda uma resposta para o osquestrador de que a tarefa foi finalizada com sucesso
-    execution = maestro.get_execution()
     maestro.finish_task(
         task_id=execution.task_id,
         status=AutomationTaskFinishStatus.SUCCESS,
