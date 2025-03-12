@@ -30,7 +30,7 @@ def consultar_api(cnpj):
             data = response.json()
 
             if "Erro" in data:
-                user_logger.error(f"Erro ao consultar CNPJ {cnpj}: {erro}")
+                user_logger.error(f"Erro ao consultar CNPJ {cnpj}: {response.status_code}")
                 return {"CNPJ": cnpj, "Status": erro}
 
             return {
@@ -90,7 +90,7 @@ def verificar_campos_vazios(df_saida):
             for col in df_saida.columns:
                 if col not in campos_vazios and (pd.isna(row[col]) or str(row[col]).strip() == "" or row[col] == "-"):
                     df_saida.at[index, col] = "-"
-                    if col != "TELEFONE + DDD" and col != "E-MAIL" and col != "DIMENSÕES CAIXA":
+                    if col != "TELEFONE + DDD" and col != "E-MAIL" and col != "DIMENSÕES CAIXA" and col != "NOME FANTASIA":
                         campos_faltando.append(col)
 
             # Atualiza o campo "Status" apenas se não for "Cadastro Inativo"
