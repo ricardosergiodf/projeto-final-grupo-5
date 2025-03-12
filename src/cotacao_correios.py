@@ -48,14 +48,10 @@ def cotacao_correios(bot):
                 else:
                     user_logger.error("Tipo de serviço incorreto.")
                     raise ValueError("Tipo de serviço incorreto.")
-                
-                bot.wait(1000)
 
                 user_logger.info("Selecionando tipo de embalagem.")
                 select_embalagem = capturar_seletor_xpath("//select[@name ='embalagem1']", bot)
                 selecionar_por_texto("Outra Embalagem", select_embalagem)
-
-                bot.wait(1000)
 
                 if peso_produto == "0.4":
                     peso_produto = float(peso_produto)
@@ -66,8 +62,6 @@ def cotacao_correios(bot):
                 preencher_xpath(altura_produto, "//input[@name ='Altura']", bot)
                 preencher_xpath(largura_produto, "//input[@name ='Largura']", bot)
                 preencher_xpath(comprimento_produto, "//input[@name='Comprimento']", bot)
-
-                bot.wait(1000)
                 
                 select_peso = capturar_seletor_xpath("//select[@name ='peso']", bot)
                 selecionar_por_texto (str(peso_produto), select_peso)
