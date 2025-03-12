@@ -46,14 +46,3 @@ Caso ocorra algum erro durante o processo:
 - 🔍 O nome da função que gerou o erro será identificado e registrado.
 - 📷 Um e-mail será enviado com a captura de tela do erro.
 
-## 🤝 Contribuição
-Se desejar contribuir com o projeto:
-1. 🍴 Faça um fork do repositório.
-2. 🔀 Crie uma nova branch (`git checkout -b minha-feature`).
-3. 💾 Faça as alterações necessárias e commit (`git commit -m 'Adicionando nova feature'`).
-4. 📤 Envie para o repositório remoto (`git push origin minha-feature`).
-5. 📝 Abra um pull request.
-
-## 📜 Licença
-Este projeto está sob a licença MIT. Consulte o arquivo `LICENSE` para mais informações.
-
