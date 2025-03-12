@@ -1,13 +1,17 @@
-'''
-
-'''
+from botcity.maestro import *
 import time
 #from src import criar-diretorios
+
+maestro = BotMaestroSDK.from_sys_args()
 
 MAXIMOS_TENTATIVAS_ERRO = 3
 FORMATO_DATA = time.strftime("%d-%m-%Y_%H-%M-%S")
 DIA_ATUAL = time.strftime("%d-%m-%Y")
 QUEBRA_LOG = "-"*50
+
+#LOGIN EMAIL
+USUARIO = maestro.get_credential(label="email_bot", key="email")
+SENHA = maestro.get_credential(label="email_bot", key="senha")
 
 #URLS
 URL_BRASIL_API = 'https://brasilapi.com.br/api/cnpj/v1/'

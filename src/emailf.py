@@ -32,9 +32,6 @@ def mandar_email(nome_processo, path_arquivo, is_sucesso = True, nome_tarefa = "
         else:
             assunto = f"Erro - RPA {nome_processo} - {hora_agora}"
             corpo_texto = f"Foi encontrado ERRO durante a execução do processo RPA {nome_processo}, na data {hora_agora}, na tarefa {nome_tarefa}"
-
-        USUARIO = "osquesobroubot@gmail.com"
-        SENHA = "reeb ohur bnig lqgd"
         
         destinatarios = capturar_destinatarios(ARQUIVO_DESTINATARIOS, NOME_COLUNA_DESTINATARIOS)
         servidor = smtplib.SMTP(host="smtp.gmail.com", port=587)
