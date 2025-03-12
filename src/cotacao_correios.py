@@ -149,9 +149,14 @@ def captura_resultado(bot, planilha_saida, index):
 
     except Exception as e:
         user_logger.warning("Erro ao capturar o resultado da cotação.")
+        """
+        Erro geralmente causado por muitas requisicoes no site dos correios, o ip acaba sendo bloqueado temporariamente
+        Solucacao: Esperar um tempo para que o ip seja desbloqueado e o bot tente executar o processo novamente
+        """
         time.sleep(60)
+        close_browser(bot)
         raise Exception("Erro ao capturar o resultado da cotação")
-        #return False
+
 
 
 def verifica_dimensoes(tipo_servico, comprimento_produto, largura_produto, altura_produto, index):
