@@ -12,7 +12,7 @@ from src.setup import *
 from src.cotacao_jadlog import *
 from src.emailf import *
 from src.excelf import *
-from src.capturar_tela import *
+from src.utilidades import *
 from src.rpa_challenge import *
 
 RAISE_NOT_CONNECTED = False
