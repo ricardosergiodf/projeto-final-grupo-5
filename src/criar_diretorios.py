@@ -2,6 +2,9 @@ import os
 from config import *
 
 def criar_diretorios():
+    """
+    Cria os diretórios necessários para o funcionamento correto do código, caso ainda não existam.
+    """
     try:
         if not os.path.exists(PATH_RPA):
             os.makedirs(PATH_RPA)

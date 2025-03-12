@@ -5,11 +5,16 @@ from src.configurar_logs import user_logger, dev_logger
 from src.setup import *
 
 def cotacao_correios(bot):
+    """
+    Realiza a cotação de preços e prazos de entrega no site dos Correios com base nos dados fornecidos
+    em uma planilha de entrada. Os resultados são salvos na planilha.
+    """
     for tentativa in range(1, MAXIMOS_TENTATIVAS_ERRO + 1):
+        # Reinstancia o bot caso haja problemas anteriores
         bot = bot_driver_setup()
         user_logger.info(f"Tentativa {tentativa}")
         try:
-            user_logger.info("Iniciando cotacao dos Correios.")
+            user_logger.info("Iniciando cotação dos Correios.")
 
             user_logger.info("Lendo planilha de saida.")
             planilha_saida = pd.read_excel(ARQUIVO_SAIDA)
@@ -18,9 +23,11 @@ def cotacao_correios(bot):
                 user_logger.info(QUEBRA_LOG)
                 user_logger.info(f"Processando linha {index + 1}.")
                 
+                # Verifica condições gerais antes de prosseguir com a cotação
                 if not verificacoes_gerais(row, index, planilha_saida, bot):
                     continue
 
+                # Extração de informações relevantes da planilha
                 cep_destino = str(row["CEP"])
                 tipo_servico = str(row["TIPO DE SERVIÇO CORREIOS"])
                 dimensoes = str(row["DIMENSÕES CAIXA"]).split(" x ")
@@ -29,8 +36,10 @@ def cotacao_correios(bot):
                 comprimento_produto = dimensoes[2].strip()
                 peso_produto = row["PESO DO PRODUTO"]
                 
+                # Remove o ponto decimal do CEP, se houver
                 if "." in str(cep_destino):
                     cep_destino = str(cep_destino).split(".")[0]
+
                 user_logger.info("Abrindo página dos Correios.")
                 abrir_url(URL_CORREIOS, bot)
 
@@ -53,6 +62,7 @@ def cotacao_correios(bot):
                 select_embalagem = capturar_seletor_xpath("//select[@name ='embalagem1']", bot)
                 selecionar_por_texto("Outra Embalagem", select_embalagem)
 
+                # Conversão do peso do produto para o tipo correto
                 if peso_produto == "0.4":
                     peso_produto = float(peso_produto)
                 else:
@@ -69,11 +79,13 @@ def cotacao_correios(bot):
                 user_logger.info("Clicando no botão Calcular.")
                 clicar_xpath("//input[@name ='Calcular']", bot)  
 
+                # Captura o resultado da cotação e salva na planilha
                 captura_resultado(bot, planilha_saida, index)
 
                 user_logger.info("Salvando planilha atualizada.")
                 planilha_saida.to_excel(ARQUIVO_SAIDA, index=False)
 
+                # Fecha o navegador após o processamento
                 close_browser(bot)
 
             user_logger.info("Cotação finalizada com sucesso.")
@@ -81,20 +93,25 @@ def cotacao_correios(bot):
             return True
 
         except Exception as e:
+            # Registra erros durante as tentativas
             user_logger.warning(f"Ocorreu um erro durante a cotação Correios na tentativa {tentativa}.")
             dev_logger.error(f'Erro: {e} na tentativa {tentativa}')
-        
+
+    # Se todas as tentativas falharem, levanta uma exceção
     raise Exception(f"Máxima de {MAXIMOS_TENTATIVAS_ERRO} tentativas alcançada, finalizando cotação Correios...")
 
 
 def celula_incorreta(planilha_saida, index):
+    """
+    Registra erro na linha especificada da planilha, substituindo os valores de cotação e atualização do status.
+    """
     user_logger.warning(f"Registrando erro na linha {index + 1}.")
 
     planilha_saida.at[index, "VALOR COTAÇÃO CORREIOS"] = "-"
     planilha_saida.at[index, "PRAZO DE ENTREGA CORREIOS"] = "-"
 
     status = planilha_saida.at[index, "Status"]
-    if status in ["nan", "N/A", "-", "", " "]:
+    if status in ["nan", "N/A", "-", " "]:
         planilha_saida.at[index, "Status"] = "Erro ao realizar a cotação Correios"
     else:
         planilha_saida.at[index, "Status"] = f"{status} | Erro ao realizar a cotação Correios"
@@ -106,6 +123,9 @@ def celula_incorreta(planilha_saida, index):
 
 
 def verifica_cep_valido(cep):
+    """
+    Verifica se o CEP informado é válido.
+    """
     try:
         cep = str(cep).replace("-", "").split(".")[0]
         return len(cep) == 8 and cep.isdigit()
@@ -115,6 +135,9 @@ def verifica_cep_valido(cep):
     
 
 def captura_resultado(bot, planilha_saida, index):
+    """
+    Captura os resultados de cotação no site dos Correios e atualiza a planilha.
+    """
     try:
         user_logger.info(f"Capturando resultado para linha {index + 1}.")
         abas = bot.driver.window_handles
@@ -136,6 +159,7 @@ def captura_resultado(bot, planilha_saida, index):
         entrega_prazo = capturar_xpath("/html[1]/body[1]/div[1]/div[3]/div[2]/div[1]/div[1]/div[2]/div[2]/div[2]/table[1]/tbody[1]/tr[2]/td[1]", bot)
         valor_total = capturar_cssselector("tfoot td", bot)
 
+        # Troca a vírgula por ponto, para melhor manipulação dos dados e evitar erros (padronização dos dados)
         valor_total = valor_total.replace(",", ".")
         entrega_prazo = entrega_prazo.split("+")[1].strip()
         valor_total = valor_total.split(" ")[1].strip()
@@ -150,8 +174,8 @@ def captura_resultado(bot, planilha_saida, index):
     except Exception as e:
         user_logger.warning("Erro ao capturar o resultado da cotação.")
         """
-        Erro geralmente causado por muitas requisicoes no site dos correios, o ip acaba sendo bloqueado temporariamente
-        Solucacao: Esperar um tempo para que o ip seja desbloqueado e o bot tente executar o processo novamente
+        Erro geralmente causado por muitas requisições no site dos correios, o ip acaba sendo bloqueado temporariamente
+        Solução: Esperar um tempo para que o ip seja desbloqueado e o bot tente executar o processo novamente
         """
         time.sleep(60)
         close_browser(bot)
@@ -160,6 +184,9 @@ def captura_resultado(bot, planilha_saida, index):
 
 
 def verifica_dimensoes(tipo_servico, comprimento_produto, largura_produto, altura_produto, index):
+    """
+    Verifica se as dimensões do produto estão dentro dos padrões aceitos pelos Correios.
+    """
     soma_dimensoes = comprimento_produto + largura_produto + altura_produto
 
     if soma_dimensoes < 21.4 or soma_dimensoes > 200:
@@ -194,6 +221,10 @@ def verifica_dimensoes(tipo_servico, comprimento_produto, largura_produto, altur
     
     
 def verificacoes_gerais(row, index, planilha_saida, bot):
+    """
+    Realiza verificações gerais nos dados antes de prosseguir com a cotação,
+    se for verificado algum erro, já é preenchido o erro da cotação na planilha de saída.
+    """
     cep_destino = str(row["CEP"])
     user_logger.info(f"Verificando CEP destino: {cep_destino}")
 
@@ -220,6 +251,7 @@ def verificacoes_gerais(row, index, planilha_saida, bot):
         close_browser(bot)
         return False
     
+    # Divide a variável de dimensões em 3 variáveis: altura, largura e comprimento para manipulação correta dos dados
     dimensoes = dimensoes.split(" x ")
     altura_produto = dimensoes[0].strip()
     largura_produto = dimensoes[1].strip()
