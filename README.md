@@ -1,7 +1,7 @@
 # 📌 Cadastro de Clientes no Sistema Challenge e Cotação de Novos Pedidos
 
 ## 📖 Descrição
-Este projeto automatiza o cadastro de clientes no Sistema Challenge e realiza a cotação de novos pedidos utilizando diferentes serviços de transporte. O processo é realizado de forma automatizada, garantindo eficiência e redução de erros manuais.
+Este projeto automatiza o cadastro de clientes previamente inseridos em uma planilha de entrada no Sistema Challenge, faz requisições para a Brasil API e resgata os dados recebidos, realiza a cotação de novos pedidos utilizando diferentes serviços de transporte (Correios e Jadlog), insere todos os dados tratados na planilha de saída e informa qual cotação entre os dois serviços de transporte é a mais vantajosa ou econômica. Ao final, um e-mail é enviado para endereços previamente cadastrados em uma planilha de e-mails, contendo os resultados de toda a automação.
 
 ## 🔧 Requisitos
 Osquestrador BotCity
